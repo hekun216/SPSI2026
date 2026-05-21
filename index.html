@@ -500,7 +500,7 @@
             
             // 更新页面标题
             const titles = {
-                'dashboard': '仪表盘',
+                'dashboard': '信息汇总',
                 'equipment': '特种设备管理',
                 'inspection': '检查台账',
                 'contract': '合同管理',
@@ -510,7 +510,7 @@
             document.getElementById('page-title').textContent = titles[sectionId];
         }
 
-        // 更新仪表盘
+        // 更新信息汇总
         function updateDashboard() {
             document.getElementById('equipment-count').textContent = equipmentData.length;
             
@@ -920,6 +920,8 @@
                             <select id="personnel-type" required>
                                 <option value="制冷与空调设备运行操作作业" ${data && data.type === '制冷与空调设备运行操作作业' ? 'selected' : ''}>制冷与空调设备运行操作作业</option>
                                 <option value="制冷与空调设备安装修理作业" ${data && data.type === '制冷与空调设备安装修理作业' ? 'selected' : ''}>制冷与空调设备安装修理作业</option>
+                                 <option value="高压电工证" ${data && data.type === '高压电工证' ? 'selected' : ''}>高压电工证</option>
+                                 <option value="低压电工证" ${data && data.type === '低压电工证' ? 'selected' : ''}>低压电工证</option>
                             </select>
                         </div>
                         <div class="form-group">
