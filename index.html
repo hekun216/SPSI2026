@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>车辆管理台账系统</title>
+    <title>特种设备综合管理平台</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -12,7 +12,7 @@
             min-height: 100vh;
             color: #fff;
         }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
         
         /* 头部样式 */
         .header {
@@ -27,7 +27,7 @@
         /* 统计卡片 */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -52,19 +52,18 @@
             margin-bottom: 30px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             padding-bottom: 10px;
+            flex-wrap: wrap;
         }
         .nav-tab {
-            padding: 12px 24px;
-            background: rgba(255,255,255,0.05);
-            border: none;
+            padding: 10px 20px;
+            background: rgba(136,181,174,0.1);
+            border: 1px solid rgba(136,181,174,0.2);
             border-radius: 8px;
-            color: rgba(255,255,255,0.7);
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 1rem;
+            color: rgba(255,255,255,0.8);
         }
-        .nav-tab:hover { background: rgba(136,181,174,0.2); }
-        .nav-tab.active {
+        .nav-tab:hover, .nav-tab.active {
             background: rgba(136,181,174,0.3);
             color: #88B5AE;
         }
@@ -73,102 +72,91 @@
         .content-section { display: none; }
         .content-section.active { display: block; }
         
-        /* 按钮样式 */
+        /* 操作按钮 */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
         .btn {
             padding: 10px 20px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 14px;
             transition: all 0.3s;
         }
         .btn-primary {
-            background: #88B5AE;
-            color: #fff;
+            background: linear-gradient(135deg, #88B5AE, #5a8a84);
+            color: white;
         }
-        .btn-primary:hover { background: #6a9a93; }
-        .btn-danger {
-            background: rgba(234,102,104,0.8);
-            color: #fff;
-        }
-        .btn-danger:hover { background: rgba(234,102,104,1); }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
         .btn-secondary {
             background: rgba(255,255,255,0.1);
-            color: #fff;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
         }
         .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+        .btn-danger {
+            background: rgba(234,102,104,0.8);
+            color: white;
+        }
+        .btn-danger:hover { background: rgba(234,102,104,1); }
         
-        /* 表单样式 */
-        .form-group {
-            margin-bottom: 20px;
+        /* 搜索框 */
+        .search-box {
+            display: flex;
+            gap: 10px;
         }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: rgba(255,255,255,0.8);
-        }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
+        .search-box input {
+            padding: 10px 15px;
             border: 1px solid rgba(255,255,255,0.2);
             border-radius: 8px;
             background: rgba(255,255,255,0.05);
-            color: #fff;
-            font-size: 1rem;
+            color: white;
+            min-width: 200px;
         }
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #88B5AE;
-        }
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        
-        /* 卡片样式 */
-        .card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .card-title { font-size: 1.2rem; color: #88B5AE; }
+        .search-box input::placeholder { color: rgba(255,255,255,0.4); }
         
         /* 表格样式 */
-        .table-container {
-            overflow-x: auto;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        table {
+        .data-table {
             width: 100%;
             border-collapse: collapse;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            overflow: hidden;
         }
-        th, td {
+        .data-table th, .data-table td {
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        th {
+        .data-table th {
             background: rgba(136,181,174,0.1);
-            color: #88B5AE;
             font-weight: 600;
+            color: #88B5AE;
         }
-        tr:hover { background: rgba(255,255,255,0.02); }
+        .data-table tr:hover { background: rgba(255,255,255,0.03); }
+        .data-table .actions { display: flex; gap: 5px; }
+        .data-table .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        /* 状态标签 */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-normal { background: rgba(82,196,26,0.2); color: #52C41A; }
+        .status-warning { background: rgba(250,173,20,0.2); color: #FAAD14; }
+        .status-danger { background: rgba(234,102,104,0.2); color: #EA6668; }
+        .status-pending { background: rgba(136,181,174,0.2); color: #88B5AE; }
         
         /* 模态框 */
         .modal {
@@ -188,78 +176,90 @@
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             border-radius: 16px;
             padding: 30px;
-            max-width: 600px;
+            max-width: 700px;
             width: 90%;
-            max-height: 80vh;
+            max-height: 90vh;
             overflow-y: auto;
-            border: 1px solid rgba(136,181,174,0.3);
+            border: 1px solid rgba(136,181,174,0.2);
         }
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .modal-title { font-size: 1.5rem; color: #88B5AE; }
+        .modal-header h2 { color: #88B5AE; }
         .close-btn {
             background: none;
             border: none;
             color: rgba(255,255,255,0.6);
-            font-size: 1.5rem;
+            font-size: 24px;
             cursor: pointer;
         }
+        .close-btn:hover { color: white; }
         
-        /* 状态标签 */
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+        /* 表单样式 */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
         }
-        .status-normal {
-            background: rgba(82,196,26,0.2);
-            color: #52C41A;
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label {
+            margin-bottom: 8px;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
         }
-        .status-warning {
-            background: rgba(250,173,20,0.2);
-            color: #FAAD14;
-        }
-        .status-danger {
-            background: rgba(234,102,104,0.2);
-            color: #EA6668;
-        }
-        
-        /* 搜索框 */
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .search-box input {
-            flex: 1;
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             padding: 12px;
             border: 1px solid rgba(255,255,255,0.2);
             border-radius: 8px;
             background: rgba(255,255,255,0.05);
-            color: #fff;
+            color: white;
+            font-size: 14px;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #88B5AE;
+        }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
         
         /* 空状态 */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.4);
         }
         .empty-state-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
+            font-size: 48px;
+            margin-bottom: 15px;
         }
         
         /* 响应式 */
         @media (max-width: 768px) {
             .header h1 { font-size: 1.8rem; }
-            .nav-tabs { flex-wrap: wrap; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .form-row { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+            .data-table { font-size: 12px; }
+            .data-table th, .data-table td { padding: 10px 8px; }
+            .nav-tabs { justify-content: center; }
         }
     </style>
 </head>
@@ -267,262 +267,98 @@
     <div class="container">
         <!-- 头部 -->
         <div class="header">
-            <h1>🚗 车辆管理台账系统</h1>
-            <p>企业车辆信息管理与检查台账综合平台</p>
+            <h1>🏭 特种设备综合管理平台</h1>
+            <p>企业设备全生命周期管理系统</p>
         </div>
         
         <!-- 统计卡片 -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="number" id="totalVehicles">0</div>
-                <div class="label">车辆总数</div>
+                <div class="number" id="stat-equipment">0</div>
+                <div class="label">设备总数</div>
             </div>
             <div class="stat-card">
-                <div class="number" id="normalVehicles">0</div>
-                <div class="label">正常状态</div>
-            </div>
-            <div class="stat-card">
-                <div class="number" id="warningVehicles">0</div>
-                <div class="label">需检查</div>
-            </div>
-            <div class="stat-card">
-                <div class="number" id="totalInspections">0</div>
+                <div class="number" id="stat-inspection">0</div>
                 <div class="label">检查记录</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="stat-contract">0</div>
+                <div class="label">合同数量</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="stat-safety">0</div>
+                <div class="label">安全隐患</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="stat-expiring" style="color: #FAAD14;">0</div>
+                <div class="label">即将到期</div>
             </div>
         </div>
         
         <!-- 导航标签 -->
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showSection('vehicles')">🚗 车辆管理</button>
-            <button class="nav-tab" onclick="showSection('inspections')">📋 检查台账</button>
-            <button class="nav-tab" onclick="showSection('dashboard')">📊 综合看板</button>
+            <div class="nav-tab active" onclick="showSection('equipment')">🛠️ 设备管理</div>
+            <div class="nav-tab" onclick="showSection('inspection')">📋 检查台账</div>
+            <div class="nav-tab" onclick="showSection('contract')">📄 合同管理</div>
+            <div class="nav-tab" onclick="showSection('safety')">🛡️ 安全检查</div>
         </div>
         
-        <!-- 车辆管理 -->
-        <div id="vehicles" class="content-section active">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">车辆列表</span>
-                    <button class="btn btn-primary" onclick="openVehicleModal()">+ 添加车辆</button>
-                </div>
+        <!-- 设备管理 -->
+        <div id="section-equipment" class="content-section active">
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="openModal('equipment')">+ 添加设备</button>
                 <div class="search-box">
-                    <input type="text" id="vehicleSearch" placeholder="搜索车牌号、车型或驾驶员..." oninput="searchVehicles()">
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>车牌号</th>
-                                <th>车型</th>
-                                <th>驾驶员</th>
-                                <th>状态</th>
-                                <th>下次年检</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="vehicleTable"></tbody>
-                    </table>
-                </div>
-                <div id="vehicleEmpty" class="empty-state" style="display: none;">
-                    <div class="empty-state-icon">🚗</div>
-                    <p>暂无车辆信息，点击"添加车辆"开始录入</p>
+                    <input type="text" id="search-equipment" placeholder="搜索设备名称/型号..." onkeyup="searchData('equipment')">
                 </div>
             </div>
+            <div id="equipment-table-container"></div>
         </div>
         
         <!-- 检查台账 -->
-        <div id="inspections" class="content-section">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">检查记录</span>
-                    <button class="btn btn-primary" onclick="openInspectionModal()">+ 添加检查记录</button>
-                </div>
+        <div id="section-inspection" class="content-section">
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="openModal('inspection')">+ 添加检查记录</button>
                 <div class="search-box">
-                    <input type="text" id="inspectionSearch" placeholder="搜索车牌号或检查项目..." oninput="searchInspections()">
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>日期</th>
-                                <th>车牌号</th>
-                                <th>检查类型</th>
-                                <th>检查结果</th>
-                                <th>检查人</th>
-                                <th>备注</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inspectionTable"></tbody>
-                    </table>
-                </div>
-                <div id="inspectionEmpty" class="empty-state" style="display: none;">
-                    <div class="empty-state-icon">📋</div>
-                    <p>暂无检查记录，点击"添加检查记录"开始录入</p>
+                    <input type="text" id="search-inspection" placeholder="搜索检查记录..." onkeyup="searchData('inspection')">
                 </div>
             </div>
+            <div id="inspection-table-container"></div>
         </div>
         
-        <!-- 综合看板 -->
-        <div id="dashboard" class="content-section">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">即将到期提醒</span>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>车牌号</th>
-                                <th>车型</th>
-                                <th>到期项目</th>
-                                <th>到期日期</th>
-                                <th>剩余天数</th>
-                            </tr>
-                        </thead>
-                        <tbody id="alertTable"></tbody>
-                    </table>
+        <!-- 合同管理 -->
+        <div id="section-contract" class="content-section">
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="openModal('contract')">+ 添加合同</button>
+                <div class="search-box">
+                    <input type="text" id="search-contract" placeholder="搜索合同..." onkeyup="searchData('contract')">
                 </div>
             </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">车辆状态分布</span>
-                </div>
-                <div id="statusChart" style="height: 300px; display: flex; align-items: center; justify-content: center;">
-                    <canvas id="statusCanvas"></canvas>
+            <div id="contract-table-container"></div>
+        </div>
+        
+        <!-- 安全检查 -->
+        <div id="section-safety" class="content-section">
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="openModal('safety')">+ 添加检查记录</button>
+                <div class="search-box">
+                    <input type="text" id="search-safety" placeholder="搜索安全检查..." onkeyup="searchData('safety')">
                 </div>
             </div>
+            <div id="safety-table-container"></div>
         </div>
     </div>
     
-    <!-- 车辆编辑模态框 -->
-    <div id="vehicleModal" class="modal">
+    <!-- 模态框 -->
+    <div id="modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="modal-title" id="vehicleModalTitle">添加车辆</span>
-                <button class="close-btn" onclick="closeVehicleModal()">×</button>
+                <h2 id="modal-title">添加</h2>
+                <button class="close-btn" onclick="closeModal()">×</button>
             </div>
-            <form id="vehicleForm" onsubmit="saveVehicle(event)">
-                <input type="hidden" id="vehicleId">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>车牌号 *</label>
-                        <input type="text" id="plateNumber" required placeholder="如：京A12345">
-                    </div>
-                    <div class="form-group">
-                        <label>车型 *</label>
-                        <input type="text" id="vehicleType" required placeholder="如：丰田凯美瑞">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>驾驶员</label>
-                        <input type="text" id="driver" placeholder="驾驶员姓名">
-                    </div>
-                    <div class="form-group">
-                        <label>联系电话</label>
-                        <input type="tel" id="phone" placeholder="联系电话">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>购买日期</label>
-                        <input type="date" id="purchaseDate">
-                    </div>
-                    <div class="form-group">
-                        <label>下次年检日期</label>
-                        <input type="date" id="nextInspection">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>保险到期日</label>
-                        <input type="date" id="insuranceExpiry">
-                    </div>
-                    <div class="form-group">
-                        <label>状态</label>
-                        <select id="vehicleStatus">
-                            <option value="normal">正常</option>
-                            <option value="warning">需检查</option>
-                            <option value="danger">维修中</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>备注</label>
-                    <textarea id="vehicleRemark" rows="3" placeholder="其他备注信息..."></textarea>
-                </div>
-                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-                    <button type="button" class="btn btn-secondary" onclick="closeVehicleModal()">取消</button>
-                    <button type="submit" class="btn btn-primary">保存</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- 检查记录模态框 -->
-    <div id="inspectionModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="modal-title" id="inspectionModalTitle">添加检查记录</span>
-                <button class="close-btn" onclick="closeInspectionModal()">×</button>
-            </div>
-            <form id="inspectionForm" onsubmit="saveInspection(event)">
-                <input type="hidden" id="inspectionId">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>检查日期 *</label>
-                        <input type="date" id="inspectionDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label>车牌号 *</label>
-                        <select id="inspectionPlate" required>
-                            <option value="">请选择车辆</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>检查类型 *</label>
-                        <select id="inspectionType" required>
-                            <option value="日常检查">日常检查</option>
-                            <option value="定期检查">定期检查</option>
-                            <option value="年检">年检</option>
-                            <option value="保养">保养</option>
-                            <option value="维修">维修</option>
-                            <option value="其他">其他</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>检查结果 *</label>
-                        <select id="inspectionResult" required>
-                            <option value="合格">合格</option>
-                            <option value="不合格">不合格</option>
-                            <option value="需整改">需整改</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>检查人 *</label>
-                        <input type="text" id="inspector" required placeholder="检查人姓名">
-                    </div>
-                    <div class="form-group">
-                        <label>下次检查日期</label>
-                        <input type="date" id="nextInspectionDate">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>检查内容</label>
-                    <textarea id="inspectionContent" rows="2" placeholder="检查的具体项目..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>备注</label>
-                    <textarea id="inspectionRemark" rows="2" placeholder="其他备注信息..."></textarea>
-                </div>
-                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-                    <button type="button" class="btn btn-secondary" onclick="closeInspectionModal()">取消</button>
+            <form id="data-form" onsubmit="saveData(event)">
+                <div id="form-fields"></div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
                     <button type="submit" class="btn btn-primary">保存</button>
                 </div>
             </form>
@@ -531,410 +367,316 @@
 
     <script>
         // 数据存储
-        let vehicles = JSON.parse(localStorage.getItem('vehicles')) || [];
-        let inspections = JSON.parse(localStorage.getItem('inspections')) || [];
+        let data = {
+            equipment: JSON.parse(localStorage.getItem('equipment') || '[]'),
+            inspection: JSON.parse(localStorage.getItem('inspection') || '[]'),
+            contract: JSON.parse(localStorage.getItem('contract') || '[]'),
+            safety: JSON.parse(localStorage.getItem('safety') || '[]')
+        };
+        
+        let currentSection = 'equipment';
+        let editingId = null;
+        
+        // 表单字段定义
+        const formFields = {
+            equipment: [
+                { name: 'name', label: '设备名称', type: 'text', required: true },
+                { name: 'model', label: '设备型号', type: 'text', required: true },
+                { name: 'manufacturer', label: '生产厂家', type: 'text' },
+                { name: 'productionDate', label: '生产日期', type: 'date' },
+                { name: 'installDate', label: '安装日期', type: 'date' },
+                { name: 'location', label: '安装位置', type: 'text' },
+                { name: 'inspectionDate', label: '检测日期', type: 'date' },
+                { name: 'nextInspectionDate', label: '下次检测日期', type: 'date' },
+                { name: 'status', label: '设备状态', type: 'select', options: ['正常', '维修中', '停用', '报废'] },
+                { name: 'responsible', label: '负责人', type: 'text' },
+                { name: 'remarks', label: '备注', type: 'textarea', fullWidth: true }
+            ],
+            inspection: [
+                { name: 'equipmentId', label: '关联设备', type: 'select', options: [], required: true },
+                { name: 'inspectionType', label: '检查类型', type: 'select', options: ['定期检验', '日常检查', '专项检查', '年度检查'] },
+                { name: 'inspectionDate', label: '检查日期', type: 'date', required: true },
+                { name: 'inspector', label: '检查人员', type: 'text' },
+                { name: 'result', label: '检查结果', type: 'select', options: ['合格', '不合格', '需整改'] },
+                { name: 'issues', label: '发现问题', type: 'textarea' },
+                { name: 'rectification', label: '整改措施', type: 'textarea' },
+                { name: 'rectificationDate', label: '整改日期', type: 'date' },
+                { name: 'status', label: '处理状态', type: 'select', options: ['待处理', '处理中', '已完成'] }
+            ],
+            contract: [
+                { name: 'contractNo', label: '合同编号', type: 'text', required: true },
+                { name: 'type', label: '合同类型', type: 'select', options: ['维保合同', '采购合同', '租赁合同', '检测合同'] },
+                { name: 'partyA', label: '甲方', type: 'text' },
+                { name: 'partyB', label: '乙方', type: 'text' },
+                { name: 'amount', label: '合同金额', type: 'number' },
+                { name: 'startDate', label: '开始日期', type: 'date' },
+                { name: 'endDate', label: '结束日期', type: 'date' },
+                { name: 'equipmentIds', label: '关联设备', type: 'text', placeholder: '设备ID，多个用逗号分隔' },
+                { name: 'content', label: '合同内容', type: 'textarea' },
+                { name: 'status', label: '合同状态', type: 'select', options: ['生效中', '即将到期', '已到期', '已终止'] }
+            ],
+            safety: [
+                { name: 'checkDate', label: '检查日期', type: 'date', required: true },
+                { name: 'checker', label: '检查人', type: 'text' },
+                { name: 'checkType', label: '检查类型', type: 'select', options: ['日常巡查', '专项检查', '季节性检查', '节假日前检查'] },
+                { name: 'findings', label: '隐患描述', type: 'textarea', required: true },
+                { name: 'severity', label: '严重程度', type: 'select', options: ['一般', '较大', '重大'] },
+                { name: 'deadline', label: '整改期限', type: 'date' },
+                { name: 'responsible', label: '责任人', type: 'text' },
+                { name: 'status', label: '处理状态', type: 'select', options: ['待整改', '整改中', '已整改', '已验收'] },
+                { name: 'photos', label: '现场照片', type: 'text', placeholder: '照片链接或描述' }
+            ]
+        };
         
         // 初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            renderVehicles();
-            renderInspections();
+        function init() {
             updateStats();
-            renderAlerts();
-            drawStatusChart();
-            
-            // 设置默认日期
-            document.getElementById('inspectionDate').valueAsDate = new Date();
-        });
-        
-        // 切换页面
-        function showSection(sectionId) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            event.target.classList.add('active');
-            
-            if (sectionId === 'dashboard') {
-                renderAlerts();
-                drawStatusChart();
-            }
+            renderAllTables();
         }
         
         // 更新统计
         function updateStats() {
-            document.getElementById('totalVehicles').textContent = vehicles.length;
-            document.getElementById('normalVehicles').textContent = vehicles.filter(v => v.status === 'normal').length;
-            document.getElementById('warningVehicles').textContent = vehicles.filter(v => v.status !== 'normal').length;
-            document.getElementById('totalInspections').textContent = inspections.length;
-        }
-        
-        // 渲染车辆列表
-        function renderVehicles(searchTerm = '') {
-            const tbody = document.getElementById('vehicleTable');
-            const emptyDiv = document.getElementById('vehicleEmpty');
+            document.getElementById('stat-equipment').textContent = data.equipment.length;
+            document.getElementById('stat-inspection').textContent = data.inspection.length;
+            document.getElementById('stat-contract').textContent = data.contract.length;
+            document.getElementById('stat-safety').textContent = data.safety.filter(s => s.status !== '已验收').length;
             
-            let filtered = vehicles;
-            if (searchTerm) {
-                const term = searchTerm.toLowerCase();
-                filtered = vehicles.filter(v => 
-                    v.plateNumber.toLowerCase().includes(term) ||
-                    v.vehicleType.toLowerCase().includes(term) ||
-                    (v.driver && v.driver.toLowerCase().includes(term))
-                );
-            }
-            
-            if (filtered.length === 0) {
-                tbody.innerHTML = '';
-                emptyDiv.style.display = 'block';
-                return;
-            }
-            
-            emptyDiv.style.display = 'none';
-            tbody.innerHTML = filtered.map(v => {
-                const statusClass = v.status === 'normal' ? 'status-normal' : 
-                                   v.status === 'warning' ? 'status-warning' : 'status-danger';
-                const statusText = v.status === 'normal' ? '正常' : 
-                                  v.status === 'warning' ? '需检查' : '维修中';
-                return `
-                    <tr>
-                        <td><strong>v.plateNumber</strong></td><td>{v.vehicleType}</td>
-                        <td>v.driver∣∣′−′</td><td><spanclass="status−badge{statusClass}">statusText</span></td><td>{v.nextInspection || '-'}</td>
-                        <td>
-                            <button class="btn btn-secondary" onclick="editVehicle('v.id′)"style="padding:6px12px;font−size:0.9rem;">编辑</button><buttonclass="btnbtn−danger"onclick="deleteVehicle(′{v.id}')" style="padding: 6px 12px; font-size: 0.9rem; margin-left: 5px;">删除</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-        
-        // 搜索车辆
-        function searchVehicles() {
-            renderVehicles(document.getElementById('vehicleSearch').value);
-        }
-        
-        // 打开车辆模态框
-        function openVehicleModal(vehicle = null) {
-            document.getElementById('vehicleModal').classList.add('active');
-            document.getElementById('vehicleModalTitle').textContent = vehicle ? '编辑车辆' : '添加车辆';
-            
-            if (vehicle) {
-                document.getElementById('vehicleId').value = vehicle.id;
-                document.getElementById('plateNumber').value = vehicle.plateNumber;
-                document.getElementById('vehicleType').value = vehicle.vehicleType;
-                document.getElementById('driver').value = vehicle.driver || '';
-                document.getElementById('phone').value = vehicle.phone || '';
-                document.getElementById('purchaseDate').value = vehicle.purchaseDate || '';
-                document.getElementById('nextInspection').value = vehicle.nextInspection || '';
-                document.getElementById('insuranceExpiry').value = vehicle.insuranceExpiry || '';
-                document.getElementById('vehicleStatus').value = vehicle.status || 'normal';
-                document.getElementById('vehicleRemark').value = vehicle.remark || '';
-            } else {
-                document.getElementById('vehicleForm').reset();
-                document.getElementById('vehicleId').value = '';
-            }
-        }
-        
-        // 关闭车辆模态框
-        function closeVehicleModal() {
-            document.getElementById('vehicleModal').classList.remove('active');
-        }
-        
-        // 保存车辆
-        function saveVehicle(e) {
-            e.preventDefault();
-            
-            const vehicle = {
-                id: document.getElementById('vehicleId').value || Date.now().toString(),
-                plateNumber: document.getElementById('plateNumber').value,
-                vehicleType: document.getElementById('vehicleType').value,
-                driver: document.getElementById('driver').value,
-                phone: document.getElementById('phone').value,
-                purchaseDate: document.getElementById('purchaseDate').value,
-                nextInspection: document.getElementById('nextInspection').value,
-                insuranceExpiry: document.getElementById('insuranceExpiry').value,
-                status: document.getElementById('vehicleStatus').value,
-                remark: document.getElementById('vehicleRemark').value
-            };
-            
-            const index = vehicles.findIndex(v => v.id === vehicle.id);
-            if (index >= 0) {
-                vehicles[index] = vehicle;
-            } else {
-                vehicles.push(vehicle);
-            }
-            
-            localStorage.setItem('vehicles', JSON.stringify(vehicles));
-            renderVehicles();
-            updateStats();
-            closeVehicleModal();
-            updateInspectionPlateSelect();
-        }
-        
-        // 编辑车辆
-        function editVehicle(id) {
-            const vehicle = vehicles.find(v => v.id === id);
-            if (vehicle) openVehicleModal(vehicle);
-        }
-        
-        // 删除车辆
-        function deleteVehicle(id) {
-            if (confirm('确定要删除这辆车辆吗？相关的检查记录也将被删除。')) {
-                vehicles = vehicles.filter(v => v.id !== id);
-                inspections = inspections.filter(i => i.plateNumber !== vehicles.find(v => v.id === id)?.plateNumber);
-                localStorage.setItem('vehicles', JSON.stringify(vehicles));
-                localStorage.setItem('inspections', JSON.stringify(inspections));
-                renderVehicles();
-                renderInspections();
-                updateStats();
-                updateInspectionPlateSelect();
-            }
-        }
-        
-        // 渲染检查记录
-        function renderInspections(searchTerm = '') {
-            const tbody = document.getElementById('inspectionTable');
-            const emptyDiv = document.getElementById('inspectionEmpty');
-            
-            let filtered = inspections.sort((a, b) => new Date(b.date) - new Date(a.date));
-            if (searchTerm) {
-                const term = searchTerm.toLowerCase();
-                filtered = filtered.filter(i => 
-                    i.plateNumber.toLowerCase().includes(term) ||
-                    i.type.toLowerCase().includes(term)
-                );
-            }
-            
-            if (filtered.length === 0) {
-                tbody.innerHTML = '';
-                emptyDiv.style.display = 'block';
-                return;
-            }
-            
-            emptyDiv.style.display = 'none';
-            tbody.innerHTML = filtered.map(i => {
-                const resultClass = i.result === '合格' ? 'status-normal' : 
-                                   i.result === '不合格' ? 'status-danger' : 'status-warning';
-                return `
-                    <tr>
-                        <td>i.date</td><td><strong>{i.plateNumber}</strong></td>
-                        <td>i.type</td><td><spanclass="status−badge{resultClass}">i.result</span></td><td>{i.inspector}</td>
-                        <td>i.remark∣∣′−′</td><td><buttonclass="btnbtn−secondary"onclick="editInspection(′{i.id}')" style="padding: 6px 12px; font-size: 0.9rem;">编辑</button>
-                            <button class="btn btn-danger" onclick="deleteInspection('${i.id}')" style="padding: 6px 12px; font-size: 0.9rem; margin-left: 5px;">删除</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-        
-        // 搜索检查记录
-        function searchInspections() {
-            renderInspections(document.getElementById('inspectionSearch').value);
-        }
-        
-        // 更新检查记录中的车牌选择
-        function updateInspectionPlateSelect() {
-            const select = document.getElementById('inspectionPlate');
-            select.innerHTML = '<option value="">请选择车辆</option>' +
-                vehicles.map(v => `<option value="${v.plateNumber}">v.plateNumber−{v.vehicleType}</option>`).join('');
-        }
-        
-        // 打开检查记录模态框
-        function openInspectionModal(inspection = null) {
-            document.getElementById('inspectionModal').classList.add('active');
-            document.getElementById('inspectionModalTitle').textContent = inspection ? '编辑检查记录' : '添加检查记录';
-            updateInspectionPlateSelect();
-            
-            if (inspection) {
-                document.getElementById('inspectionId').value = inspection.id;
-                document.getElementById('inspectionDate').value = inspection.date;
-                document.getElementById('inspectionPlate').value = inspection.plateNumber;
-                document.getElementById('inspectionType').value = inspection.type;
-                document.getElementById('inspectionResult').value = inspection.result;
-                document.getElementById('inspector').value = inspection.inspector;
-                document.getElementById('nextInspectionDate').value = inspection.nextDate || '';
-                document.getElementById('inspectionContent').value = inspection.content || '';
-                document.getElementById('inspectionRemark').value = inspection.remark || '';
-            } else {
-                document.getElementById('inspectionForm').reset();
-                document.getElementById('inspectionId').value = '';
-                document.getElementById('inspectionDate').valueAsDate = new Date();
-            }
-        }
-        
-        // 关闭检查记录模态框
-        function closeInspectionModal() {
-            document.getElementById('inspectionModal').classList.remove('active');
-        }
-        
-        // 保存检查记录
-        function saveInspection(e) {
-            e.preventDefault();
-            
-            const inspection = {
-                id: document.getElementById('inspectionId').value || Date.now().toString(),
-                date: document.getElementById('inspectionDate').value,
-                plateNumber: document.getElementById('inspectionPlate').value,
-                type: document.getElementById('inspectionType').value,
-                result: document.getElementById('inspectionResult').value,
-                inspector: document.getElementById('inspector').value,
-                nextDate: document.getElementById('nextInspectionDate').value,
-                content: document.getElementById('inspectionContent').value,
-                remark: document.getElementById('inspectionRemark').value
-            };
-            
-            const index = inspections.findIndex(i => i.id === inspection.id);
-            if (index >= 0) {
-                inspections[index] = inspection;
-            } else {
-                inspections.push(inspection);
-            }
-            
-            localStorage.setItem('inspections', JSON.stringify(inspections));
-            renderInspections();
-            updateStats();
-            closeInspectionModal();
-        }
-        
-        // 编辑检查记录
-        function editInspection(id) {
-            const inspection = inspections.find(i => i.id === id);
-            if (inspection) openInspectionModal(inspection);
-        }
-        
-        // 删除检查记录
-        function deleteInspection(id) {
-            if (confirm('确定要删除这条检查记录吗？')) {
-                inspections = inspections.filter(i => i.id !== id);
-                localStorage.setItem('inspections', JSON.stringify(inspections));
-                renderInspections();
-                updateStats();
-            }
-        }
-        
-        // 渲染到期提醒
-        function renderAlerts() {
-            const tbody = document.getElementById('alertTable');
+            // 计算即将到期的设备（30天内）
             const today = new Date();
-            const alerts = [];
-            
-            vehicles.forEach(v => {
-                if (v.nextInspection) {
-                    const days = Math.ceil((new Date(v.nextInspection) - today) / (1000 * 60 * 60 * 24));
-                    if (days <= 30) {
-                        alerts.push({
-                            plate: v.plateNumber,
-                            type: v.vehicleType,
-                            item: '年检',
-                            date: v.nextInspection,
-                            days: days
-                        });
-                    }
-                }
-                if (v.insuranceExpiry) {
-                    const days = Math.ceil((new Date(v.insuranceExpiry) - today) / (1000 * 60 * 60 * 24));
-                    if (days <= 30) {
-                        alerts.push({
-                            plate: v.plateNumber,
-                            type: v.vehicleType,
-                            item: '保险',
-                            date: v.insuranceExpiry,
-                            days: days
-                        });
-                    }
-                }
+            const expiring = data.equipment.filter(e => {
+                if (!e.nextInspectionDate) return false;
+                const nextDate = new Date(e.nextInspectionDate);
+                const diffDays = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
+                return diffDays <= 30 && diffDays >= 0;
             });
-            
-            alerts.sort((a, b) => a.days - b.days);
-            
-            if (alerts.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: rgba(255,255,255,0.5);">暂无即将到期的项目</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = alerts.map(a => {
-                const daysClass = a.days < 0 ? 'status-danger' : a.days <= 7 ? 'status-warning' : 'status-normal';
-                const daysText = a.days < 0 ? `已过期 Math.abs(a.days)天‘:‘剩余{a.days} 天`;
-                return `
-                    <tr>
-                        <td><strong>a.plate</strong></td><td>{a.type}</td>
-                        <td>a.item</td><td>{a.date}</td>
-                        <td><span class="status-badge daysClass">{daysText}</span></td>
-                    </tr>
-                `;
-            }).join('');
+            document.getElementById('stat-expiring').textContent = expiring.length;
         }
         
-        // 绘制状态分布图
-        function drawStatusChart() {
-            const canvas = document.getElementById('statusCanvas');
-            if (!canvas) return;
+        // 切换标签页
+        function showSection(section) {
+            currentSection = section;
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('section-' + section).classList.add('active');
+            renderTable(section);
+        }
+        
+        // 渲染所有表格
+        function renderAllTables() {
+            ['equipment', 'inspection', 'contract', 'safety'].forEach(renderTable);
+        }
+        
+        // 渲染表格
+        function renderTable(section, searchTerm = '') {
+            const container = document.getElementById(section + '-table-container');
+            let items = data[section];
             
-            const ctx = canvas.getContext('2d');
-            const container = document.getElementById('statusChart');
-            canvas.width = container.offsetWidth;
-            canvas.height = 300;
+            if (searchTerm) {
+                items = items.filter(item => 
+                    Object.values(item).some(val => 
+                        String(val).toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                );
+            }
             
-            const normal = vehicles.filter(v => v.status === 'normal').length;
-            const warning = vehicles.filter(v => v.status === 'warning').length;
-            const danger = vehicles.filter(v => v.status === 'danger').length;
-            const total = vehicles.length;
-            
-            if (total === 0) {
-                ctx.fillStyle = 'rgba(255,255,255,0.5)';
-                ctx.font = '16px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('暂无数据', canvas.width / 2, canvas.height / 2);
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>暂无数据，点击上方按钮添加</p>
+                    </div>
+                `;
                 return;
             }
             
-            const data = [
-                { label: '正常', value: normal, color: '#52C41A' },
-                { label: '需检查', value: warning, color: '#FAAD14' },
-                { label: '维修中', value: danger, color: '#EA6668' }
-            ];
+            let html = '<table class="data-table"><thead><tr>';
+            const columns = getColumns(section);
+            columns.forEach(col => html += '<th>' + col.label + '</th>');
+            html += '<th>操作</th></tr></thead><tbody>';
             
-            const centerX = canvas.width / 2 - 100;
-            const centerY = canvas.height / 2;
-            const radius = 80;
-            let currentAngle = -Math.PI / 2;
-            
-            data.forEach(item => {
-                if (item.value > 0) {
-                    const angle = (item.value / total) * Math.PI * 2;
-                    
-                    ctx.beginPath();
-                    ctx.moveTo(centerX, centerY);
-                    ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + angle);
-                    ctx.closePath();
-                    ctx.fillStyle = item.color;
-                    ctx.fill();
-                    
-                    currentAngle += angle;
-                }
+            items.forEach(item => {
+                html += '<tr>';
+                columns.forEach(col => {
+                    let value = item[col.key] || '-';
+                    if (col.key === 'status') {
+                        value = '<span class="status-badge status-' + getStatusClass(value) + '">' + value + '</span>';
+                    }
+                    html += '<td>' + value + '</td>';
+                });
+                html += `
+                    <td class="actions">
+                        <button class="btn btn-secondary btn-sm" onclick="editItem('section′,′{item.id}')">编辑</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteItem('section′,′{item.id}')">删除</button>
+                    </td>
+                </tr>`;
             });
             
-            // 绘制图例
-            let legendY = centerY - 40;
-            data.forEach(item => {
-                if (item.value > 0) {
-                    ctx.fillStyle = item.color;
-                    ctx.fillRect(centerX + 120, legendY, 16, 16);
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        // 获取表格列
+        function getColumns(section) {
+            const columns = {
+                equipment: [
+                    { key: 'name', label: '设备名称' },
+                    { key: 'model', label: '型号' },
+                    { key: 'location', label: '位置' },
+                    { key: 'nextInspectionDate', label: '下次检测' },
+                    { key: 'status', label: '状态' }
+                ],
+                inspection: [
+                    { key: 'equipmentId', label: '设备' },
+                    { key: 'inspectionType', label: '检查类型' },
+                    { key: 'inspectionDate', label: '检查日期' },
+                    { key: 'result', label: '结果' },
+                    { key: 'status', label: '状态' }
+                ],
+                contract: [
+                    { key: 'contractNo', label: '合同编号' },
+                    { key: 'type', label: '类型' },
+                    { key: 'partyB', label: '乙方' },
+                    { key: 'endDate', label: '到期日' },
+                    { key: 'status', label: '状态' }
+                ],
+                safety: [
+                    { key: 'checkDate', label: '检查日期' },
+                    { key: 'findings', label: '隐患描述' },
+                    { key: 'severity', label: '严重程度' },
+                    { key: 'deadline', label: '整改期限' },
+                    { key: 'status', label: '状态' }
+                ]
+            };
+            return columns[section];
+        }
+        
+        // 获取状态样式类
+        function getStatusClass(status) {
+            const map = {
+                '正常': 'normal', '合格': 'normal', '生效中': 'normal', '已整改': 'normal', '已验收': 'normal',
+                '维修中': 'warning', '需整改': 'warning', '即将到期': 'warning', '整改中': 'warning', '处理中': 'warning',
+                '停用': 'danger', '报废': 'danger', '不合格': 'danger', '已到期': 'danger', '重大': 'danger',
+                '待处理': 'pending', '待整改': 'pending', '一般': 'pending'
+            };
+            return map[status] || 'pending';
+        }
+        
+        // 打开模态框
+        function openModal(section, id = null) {
+            currentSection = section;
+            editingId = id;
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modal-title');
+            const formFields = document.getElementById('form-fields');
+            
+            const titles = { equipment: '设备', inspection: '检查记录', contract: '合同', safety: '安全检查' };
+            title.textContent = (id ? '编辑' : '添加') + titles[section];
+            
+            // 生成表单字段
+            let html = '<input type="hidden" name="id">';
+            const fields = window.formFields[section];
+            
+            fields.forEach(field => {
+                const fullWidth = field.fullWidth ? 'full-width' : '';
+                html += '<div class="form-group ' + fullWidth + '">';
+                html += '<label>' + field.label + (field.required ? ' *' : '') + '</label>';
+                
+                if (field.type === 'select') {
+                    html += '<select name="' + field.name + '"' + (field.required ? ' required' : '') + '>';
+                    html += '<option value="">请选择</option>';
                     
-                    ctx.fillStyle = 'rgba(255,255,255,0.8)';
-                    ctx.font = '14px sans-serif';
-                    ctx.textAlign = 'left';
-                    ctx.fillText(`item.label:{item.value} (${Math.round(item.value/total*100)}%)`, centerX + 145, legendY + 12);
-                    
-                    legendY += 30;
+                    // 如果是设备选择，动态加载设备列表
+                    if (field.name === 'equipmentId' && section === 'inspection') {
+                        data.equipment.forEach(eq => {
+                            html += '<option value="' + eq.id + '">' + eq.name + ' (' + eq.model + ')</option>';
+                        });
+                    } else {
+                        field.options.forEach(opt => {
+                            html += '<option value="' + opt + '">' + opt + '</option>';
+                        });
+                    }
+                    html += '</select>';
+                } else if (field.type === 'textarea') {
+                    html += '<textarea name="' + field.name + '" placeholder="' + (field.placeholder || '') + '"></textarea>';
+                } else {
+                    html += '<input type="' + field.type + '" name="' + field.name + '" placeholder="' + (field.placeholder || '') + '"' + (field.required ? ' required' : '') + '>';
                 }
+                html += '</div>';
             });
+            
+            formFields.innerHTML = html;
+            
+            // 如果是编辑，填充数据
+            if (id) {
+                const item = data[section].find(i => i.id === id);
+                if (item) {
+                    Object.keys(item).forEach(key => {
+                        const input = document.querySelector('[name="' + key + '"]');
+                        if (input) input.value = item[key];
+                    });
+                }
+            } else {
+                document.querySelector('[name="id"]').value = Date.now().toString();
+            }
+            
+            modal.classList.add('active');
+        }
+        
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            editingId = null;
+        }
+        
+        // 保存数据
+        function saveData(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const item = {};
+            formData.forEach((value, key) => item[key] = value);
+            
+            if (editingId) {
+                const index = data[currentSection].findIndex(i => i.id === editingId);
+                if (index !== -1) data[currentSection][index] = item;
+            } else {
+                data[currentSection].push(item);
+            }
+            
+            localStorage.setItem(currentSection, JSON.stringify(data[currentSection]));
+            closeModal();
+            renderTable(currentSection);
+            updateStats();
+        }
+        
+        // 编辑项目
+        function editItem(section, id) {
+            openModal(section, id);
+        }
+        
+        // 删除项目
+        function deleteItem(section, id) {
+            if (confirm('确定要删除这条记录吗？')) {
+                data[section] = data[section].filter(i => i.id !== id);
+                localStorage.setItem(section, JSON.stringify(data[section]));
+                renderTable(section);
+                updateStats();
+            }
+        }
+        
+        // 搜索数据
+        function searchData(section) {
+            const searchTerm = document.getElementById('search-' + section).value;
+            renderTable(section, searchTerm);
         }
         
         // 点击模态框外部关闭
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.classList.remove('active');
-            }
-        }
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        
+        // 初始化
+        init();
     </script>
 </body>
 </html>
