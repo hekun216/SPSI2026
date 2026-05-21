@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>特种设备综合管理平台 V7.0</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; color: #88B5AE; }
+        .header p { color: rgba(255,255,255,0.6); }
+
+        /* 统计卡片 */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat-card { background: rgba(136,181,174,0.1); border-radius: 12px; padding: 20px; text-align: center; transition: transform 0.3s; cursor: pointer; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card.warning { background: rgba(250,173,20,0.15); border: 1px solid rgba(250,173,20,0.3); }
+        .stat-number { font-size: 2rem; font-weight: bold; color: #88B5AE; }
+        .stat-card.warning .stat-number { color: #FAAD14; }
+        .stat-label { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 5px; }
+
+        /* 预警面板 */
+        .warning-panel { background: rgba(250,173,20,0.1); border: 1px solid rgba(250,173,20,0.3); border-radius: 12px; padding: 20px; margin-bottom: 30px; display: none; }
+        .warning-panel.show { display: block; }
+        .warning-title { color: #FAAD14; font-size: 1.2rem; margin-bottom: 15px; }
+        .alert-item { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 12px; margin-bottom: 10px; border-left: 3px solid #FAAD14; }
+
+        /* 导航标签 */
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .nav-tab { padding: 12px 24px; background: rgba(255,255,255,0.05); border: none; border-radius: 8px; color: rgba(255,255,255,0.7); cursor: pointer; transition: all 0.3s; font-size: 1rem; }
+        .nav-tab:hover { background: rgba(136,181,174,0.2); color: #fff; }
+        .nav-tab.active { background: #88B5AE; color: #1a1a2e; font-weight: bold; }
+
+        /* 内容区域 */
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 二级菜单 */
+        .submenu { background: rgba(136,181,174,0.08); border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .submenu-title { color: #88B5AE; font-weight: bold; margin-bottom: 10px; font-size: 1.1rem; }
+        .submenu-items { display: flex; gap: 10px; flex-wrap: wrap; }
+        .submenu-item { background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; color: rgba(255,255,255,0.8); }
+
+        /* 表单容器 */
+        .form-container { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid rgba(136,181,174,0.2); }
+        .form-title { color: #88B5AE; font-size: 1.3rem; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgba(136,181,174,0.3); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { color: rgba(255,255,255,0.8); margin-bottom: 8px; font-size: 0.95rem; }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 12px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+            background: rgba(255,255,255,0.1); color: #fff; font-size: 1rem; transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: #88B5AE; box-shadow: 0 0 0 3px rgba(136,181,174,0.2);
+        }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+
+        /* 按钮样式 - 修复灰色问题 */
+        .btn-group { display: flex; gap: 15px; margin-top: 25px; }
+        .btn {
+            padding: 12px 30px; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;
+            transition: all 0.3s; font-weight: 500;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #88B5AE 0%, #6b9a93 100%);
+            color: #1a1a2e;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(136,181,174,0.4); }
+        .btn-secondary {
+            background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+        .btn-danger { background: rgba(234,102,104,0.8); color: #fff; }
+        .btn-danger:hover { background: rgba(234,102,104,1); }
+        .btn-small { padding: 6px 12px; font-size: 0.85rem; border-radius: 6px; border: none; cursor: pointer; }
+
+        /* 表格样式 */
+        .table-container { background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; }
+        .table-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .table-title { color: #88B5AE; font-size: 1.2rem; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { background: rgba(136,181,174,0.1); color: #88B5AE; font-weight: 600; }
+        tr:hover { background: rgba(255,255,255,0.03); }
+        .actions { display: flex; gap: 8px; }
+
+        /* 徽章 */
+        .badge { padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 500; }
+        .badge-success { background: rgba(82,196,26,0.2); color: #52C41A; }
+        .badge-warning { background: rgba(250,173,20,0.2); color: #FAAD14; }
+        .badge-danger { background: rgba(234,102,104,0.2); color: #EA6668; }
+        .badge-info { background: rgba(136,181,174,0.2); color: #88B5AE; }
+
+        /* 搜索框 */
+        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-box input { flex: 1; padding: 10px 15px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: rgba(255,255,255,0.1); color: #fff; }
+        .search-box button { padding: 10px 20px; background: #88B5AE; color: #1a1a2e; border: none; border-radius: 8px; cursor: pointer; }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .nav-tabs { justify-content: center; }
+            .nav-tab { padding: 10px 16px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏭 特种设备综合管理平台</h1>
+            <p>企业级台账系统 · 特种作业人员提前2个月预警</p>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card" onclick="showSection('equipment')">
+                <div class="stat-number" id="stat-equipment">0</div>
+                <div class="stat-label">特种设备</div>
+            </div>
+            <div class="stat-card" onclick="showSection('inspection')">
+                <div class="stat-number" id="stat-inspection">0</div>
+                <div class="stat-label">检查记录</div>
+            </div>
+            <div class="stat-card" onclick="showSection('contract')">
+                <div class="stat-number" id="stat-contract">0</div>
+                <div class="stat-label">合同管理</div>
+            </div>
+            <div class="stat-card" onclick="showSection('safety')">
+                <div class="stat-number" id="stat-safety">0</div>
+                <div class="stat-label">安全检查</div>
+            </div>
+            <div class="stat-card" onclick="showSection('person')">
+                <div class="stat-number" id="stat-person">0</div>
+                <div class="stat-label">特种人员</div>
+            </div>
+            <div class="stat-card warning" onclick="showSection('person')">
+                <div class="stat-number" id="stat-warning">0</div>
+                <div class="stat-label">即将到期</div>
+            </div>
+        </div>
+
+        <!-- 预警面板 -->
+        <div class="warning-panel" id="warning-panel">
+            <div class="warning-title">⚠️ 证书即将到期预警（2个月内）</div>
+            <div id="warning-list"></div>
+        </div>
+
+        <!-- 导航标签 -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('equipment', this)">🏭 设备管理</button>
+            <button class="nav-tab" onclick="switchTab('inspection', this)">📋 检查台账</button>
+            <button class="nav-tab" onclick="switchTab('contract', this)">📄 合同管理</button>
+            <button class="nav-tab" onclick="switchTab('safety', this)">🛡️ 安全检查</button>
+            <button class="nav-tab" onclick="switchTab('person', this)">👷 特种人员</button>
+        </div>
+
+        <!-- 设备管理 -->
+        <div id="section-equipment" class="content-section active">
+            <div class="form-container">
+                <h3 class="form-title">➕ 添加/编辑设备</h3>
+                <form id="equipment-form" onsubmit="handleEquipmentSubmit(event)">
+                    <input type="hidden" id="equipment-id">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>设备名称 *</label>
+                            <input type="text" id="eq-name" required placeholder="如：制冷压缩机">
+                        </div>
+                        <div class="form-group">
+                            <label>设备型号 *</label>
+                            <input type="text" id="eq-model" required placeholder="如：Y-100">
+                        </div>
+                        <div class="form-group">
+                            <label>生产厂家</label>
+                            <input type="text" id="eq-manufacturer" placeholder="生产厂家名称">
+                        </div>
+                        <div class="form-group">
+                            <label>生产日期</label>
+                            <input type="date" id="eq-production">
+                        </div>
+                        <div class="form-group">
+                            <label>安装日期</label>
+                            <input type="date" id="eq-install">
+                        </div>
+                        <div class="form-group">
+                            <label>安装位置</label>
+                            <input type="text" id="eq-location" placeholder="如：一号机房">
+                        </div>
+                        <div class="form-group">
+                            <label>检测日期</label>
+                            <input type="date" id="eq-inspection">
+                        </div>
+                        <div class="form-group">
+                            <label>下次检测日期 *</label>
+                            <input type="date" id="eq-next-inspection" required>
+                        </div>
+                        <div class="form-group">
+                            <label>设备状态</label>
+                            <select id="eq-status">
+                                <option value="正常运行">正常运行</option>
+                                <option value="待机中">待机中</option>
+                                <option value="维修中">维修中</option>
+                                <option value="已报废">已报废</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>负责人</label>
+                            <input type="text" id="eq-responsible" placeholder="负责人姓名">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>备注</label>
+                            <textarea id="eq-remarks" placeholder="其他信息..."></textarea>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">💾 保存设备</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetEquipmentForm()">重置</button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <span class="table-title">📋 设备清单</span>
+                    <div class="search-box">
+                        <input type="text" id="eq-search" placeholder="搜索设备名称、型号或位置..." onkeyup="searchEquipment()">
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>设备名称</th>
+                            <th>型号</th>
+                            <th>位置</th>
+                            <th>下次检测</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="equipment-list"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 检查台账 -->
+        <div id="section-inspection" class="content-section">
+            <div class="form-container">
+                <h3 class="form-title">➕ 添加/编辑检查记录</h3>
+                <form id="inspection-form" onsubmit="handleInspectionSubmit(event)">
+                    <input type="hidden" id="inspection-id">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>检查设备 *</label>
+                            <select id="in-equipment" required>
+                                <option value="">请选择设备</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>检查日期 *</label>
+                            <input type="date" id="in-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>检查类型 *</label>
+                            <select id="in-type" required>
+                                <option value="日常巡检">日常巡检</option>
+                                <option value="定期检测">定期检测</option>
+                                <option value="专项检查">专项检查</option>
+                                <option value="年度检验">年度检验</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>检查结果 *</label>
+                            <select id="in-result" required>
+                                <option value="合格">合格</option>
+                                <option value="基本合格">基本合格</option>
+                                <option value="不合格">不合格</option>
+                                <option value="需整改">需整改</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>下次检查日期 *</label>
+                            <input type="date" id="in-next" required>
+                        </div>
+                        <div class="form-group">
+                            <label>检查人员</label>
+                            <input type="text" id="in-checker" placeholder="检查人员姓名">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>备注</label>
+                            <textarea id="in-remarks" placeholder="检查详情..."></textarea>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">💾 保存记录</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetInspectionForm()">重置</button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <span class="table-title">📋 检查记录清单</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>设备名称</th>
+                            <th>检查日期</th>
+                            <th>检查类型</th>
+                            <th>结果</th>
+                            <th>下次检查</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inspection-list"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 合同管理 -->
+        <div id="section-contract" class="content-section">
+            <div class="form-container">
+                <h3 class="form-title">➕ 添加/编辑合同</h3>
+                <form id="contract-form" onsubmit="handleContractSubmit(event)">
+                    <input type="hidden" id="contract-id">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>合同编号 *</label>
+                            <input type="text" id="ct-no" required placeholder="如：HT-2024-001">
+                        </div>
+                        <div class="form-group">
+                            <label>合同类型 *</label>
+                            <select id="ct-type" required>
+                                <option value="维保合同">维保合同</option>
+                                <option value="采购合同">采购合同</option>
+                                <option value="安装合同">安装合同</option>
+                                <option value="检测合同">检测合同</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>合作方 *</label>
+                            <input type="text" id="ct-party" required placeholder="合作单位名称">
+                        </div>
+                        <div class="form-group">
+                            <label>开始日期 *</label>
+                            <input type="date" id="ct-start" required>
+                        </div>
+                        <div class="form-group">
+                            <label>结束日期 *</label>
+                            <input type="date" id="ct-end" required>
+                        </div>
+                        <div class="form-group">
+                            <label>合同金额</label>
+                            <input type="number" id="ct-amount" placeholder="金额（元）">
+                        </div>
+                        <div class="form-group">
+                            <label>合同状态</label>
+                            <select id="ct-status">
+                                <option value="执行中">执行中</option>
+                                <option value="即将到期">即将到期</option>
+                                <option value="已到期">已到期</option>
+                                <option value="已终止">已终止</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>备注</label>
+                            <textarea id="ct-remarks" placeholder="合同详情..."></textarea>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">💾 保存合同</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetContractForm()">重置</button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <span class="table-title">📋 合同清单</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>合同编号</th>
+                            <th>类型</th>
+                            <th>合作方</th>
+                            <th>结束日期</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contract-list"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 安全检查 -->
+        <div id="section-safety" class="content-section">
+            <div class="form-container">
+                <h3 class="form-title">➕ 添加/编辑安全检查记录</h3>
+                <form id="safety-form" onsubmit="handleSafetySubmit(event)">
+                    <input type="hidden" id="safety-id">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>检查日期 *</label>
+                            <input type="date" id="sf-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>检查地点 *</label>
+                            <input type="text" id="sf-location" required placeholder="如：一号机房">
+                        </div>
+                        <div class="form-group">
+                            <label>隐患类型 *</label>
+                            <select id="sf-hazard" required>
+                                <option value="设备隐患">设备隐患</option>
+                                <option value="操作隐患">操作隐患</option>
+                                <option value="环境隐患">环境隐患</option>
+                                <option value="管理隐患">管理隐患</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>严重程度 *</label>
+                            <select id="sf-severity" required>
+                                <option value="一般">一般</option>
+                                <option value="较重">较重</option>
+                                <option value="严重">严重</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>整改期限 *</label>
+                            <input type="date" id="sf-deadline" required>
+                        </div>
+                        <div class="form-group">
+                            <label>责任人 *</label>
+                            <input type="text" id="sf-responsible" required placeholder="责任人姓名">
+                        </div>
+                        <div class="form-group">
+                            <label>整改状态 *</label>
+                            <select id="sf-status" required>
+                                <option value="待整改">待整改</option>
+                                <option value="整改中">整改中</option>
+                                <option value="已整改">已整改</option>
+                                <option value="已验收">已验收</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>隐患描述 *</label>
+                            <textarea id="sf-description" required placeholder="详细描述隐患情况..."></textarea>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">💾 保存记录</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetSafetyForm()">重置</button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <span class="table-title">📋 安全检查记录</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>检查日期</th>
+                            <th>地点</th>
+                            <th>隐患类型</th>
+                            <th>严重程度</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="safety-list"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 特种人员管理 -->
+        <div id="section-person" class="content-section">
+            <div class="submenu">
+                <div class="submenu-title">特种作业类型</div>
+                <div class="submenu-items">
+                    <span class="submenu-item">❄️ 制冷与空调设备运行操作作业</span>
+                    <span class="submenu-item">🔧 制冷与空调设备安装修理作业</span>
+                </div>
+            </div>
+            <div class="form-container">
+                <h3 class="form-title">➕ 添加/编辑特种作业人员</h3>
+                <form id="person-form" onsubmit="handlePersonSubmit(event)">
+                    <input type="hidden" id="person-id">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>姓名 *</label>
+                            <input type="text" id="ps-name" required placeholder="人员姓名">
+                        </div>
+                        <div class="form-group">
+                            <label>证书编号 *</label>
+                            <input type="text" id="ps-cert-no" required placeholder="如：T410105198501011234">
+                        </div>
+                        <div class="form-group">
+                            <label>作业类型 *</label>
+                            <select id="ps-cert-type" required>
+                                <option value="制冷与空调设备运行操作作业">制冷与空调设备运行操作作业</option>
+                                <option value="制冷与空调设备安装修理作业">制冷与空调设备安装修理作业</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>发证日期 *</label>
+                            <input type="date" id="ps-issue" required>
+                        </div>
+                        <div class="form-group">
+                            <label>换证日期 *</label>
+                            <input type="date" id="ps-expiry" required>
+                        </div>
+                        <div class="form-group">
+                            <label>证书状态</label>
+                            <select id="ps-status">
+                                <option value="有效">有效</option>
+                                <option value="即将到期">即将到期</option>
+                                <option value="已过期">已过期</option>
+                                <option value="已注销">已注销</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>备注</label>
+                            <textarea id="ps-remarks" placeholder="其他信息..."></textarea>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">💾 保存人员</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetPersonForm()">重置</button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <span class="table-title">📋 特种作业人员清单（提前2个月预警）</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>姓名</th>
+                            <th>作业类型</th>
+                            <th>换证日期</th>
+                            <th>剩余天数</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="person-list"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 数据存储 ====================
+        const StorageKeys = {
+            EQUIPMENT: 'spe_equipment_v7',
+            INSPECTION: 'spe_inspection_v7',
+            CONTRACT: 'spe_contract_v7',
+            SAFETY: 'spe_safety_v7',
+            PERSON: 'spe_person_v7'
+        };
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function getData(key) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error('读取数据失败:', e);
+                return [];
+            }
+        }
+
+        function saveData(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+                return true;
+            } catch (e) {
+                console.error('保存数据失败:', e);
+                alert('保存失败，可能是存储空间已满');
+                return false;
+            }
+        }
+
+        // ==================== 页面切换 ====================
+        function switchTab(section, btn) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('section-' + section).classList.add('active');
+            btn.classList.add('active');
+            refreshSection(section);
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('section-' + section).classList.add('active');
+            const tabMap = { 'equipment': 0, 'inspection': 1, 'contract': 2, 'safety': 3, 'person': 4 };
+            const tabs = document.querySelectorAll('.nav-tab');
+            if (tabs[tabMap[section]]) tabs[tabMap[section]].classList.add('active');
+            refreshSection(section);
+        }
+
+        function refreshSection(section) {
+            if (section === 'equipment') renderEquipmentList();
+            if (section === 'inspection') { renderInspectionList(); updateEquipmentSelect(); }
+            if (section === 'contract') renderContractList();
+            if (section === 'safety') renderSafetyList();
+            if (section === 'person') renderPersonList();
+        }
+
+        // ==================== 统计更新 ====================
+        function updateStats() {
+            document.getElementById('stat-equipment').textContent = getData(StorageKeys.EQUIPMENT).length;
+            document.getElementById('stat-inspection').textContent = getData(StorageKeys.INSPECTION).length;
+            document.getElementById('stat-contract').textContent = getData(StorageKeys.CONTRACT).length;
+            document.getElementById('stat-safety').textContent = getData(StorageKeys.SAFETY).length;
+            document.getElementById('stat-person').textContent = getData(StorageKeys.PERSON).length;
+            
+            const persons = getData(StorageKeys.PERSON);
+            const warningCount = persons.filter(p => {
+                const days = getDaysUntil(p.expiryDate);
+                return days <= 60 && days > 0;
+            }).length;
+            document.getElementById('stat-warning').textContent = warningCount;
+            
+            const warningPanel = document.getElementById('warning-panel');
+            if (warningCount > 0) {
+                warningPanel.classList.add('show');
+                renderWarningList();
+            } else {
+                warningPanel.classList.remove('show');
+            }
+        }
+
+        function getDaysUntil(dateStr) {
+            if (!dateStr) return 999;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const target = new Date(dateStr);
+            target.setHours(0, 0, 0, 0);
+            return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+        }
+
+        function renderWarningList() {
+            const persons = getData(StorageKeys.PERSON);
+            const warnings = persons.filter(p => {
+                const days = getDaysUntil(p.expiryDate);
+                return days <= 60 && days > 0;
+            });
+            const container = document.getElementById('warning-list');
+            container.innerHTML = warnings.map(p => {
+                const days = getDaysUntil(p.expiryDate);
+                const isDanger = days <= 30;
+                return '<div class="alert-item"><strong>' + p.name + '</strong> - ' + p.certificateType + '<br/><small style="color: ' + (isDanger ? '#EA6668' : '#FAAD14') + '">还有 ' + days + ' 天到期 (' + p.expiryDate + ')</small></div>';
+            }).join('');
+        }
+
+        // ==================== 设备管理 - 修复版 ====================
+        function handleEquipmentSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('equipment-id').value;
+            const data = {
+                id: id || generateId(),
+                name: document.getElementById('eq-name').value,
+                model: document.getElementById('eq-model').value,
+                manufacturer: document.getElementById('eq-manufacturer').value,
+                productionDate: document.getElementById('eq-production').value,
+                installDate: document.getElementById('eq-install').value,
+                location: document.getElementById('eq-location').value,
+                inspectionDate: document.getElementById('eq-inspection').value,
+                nextInspectionDate: document.getElementById('eq-next-inspection').value,
+                status: document.getElementById('eq-status').value,
+                responsible: document.getElementById('eq-responsible').value,
+                remarks: document.getElementById('eq-remarks').value
+            };
+            
+            let equipment = getData(StorageKeys.EQUIPMENT);
+            if (id) {
+                const index = equipment.findIndex(item => item.id === id);
+                if (index !== -1) equipment[index] = data;
+            } else {
+                equipment.push(data);
+            }
+            
+            if (saveData(StorageKeys.EQUIPMENT, equipment)) {
+                alert(id ? '设备更新成功！' : '设备添加成功！');
+                resetEquipmentForm();
+                renderEquipmentList();
+                updateStats();
+            }
+        }
+
+        function resetEquipmentForm() {
+            document.getElementById('equipment-form').reset();
+            document.getElementById('equipment-id').value = '';
+        }
+
+        function renderEquipmentList() {
+            const equipment = getData(StorageKeys.EQUIPMENT);
+            const searchTerm = (document.getElementById('eq-search')?.value || '').toLowerCase();
+            const filtered = equipment.filter(item =>
+                (item.name || '').toLowerCase().includes(searchTerm) ||
+                (item.model || '').toLowerCase().includes(searchTerm) ||
+                (item.location || '').toLowerCase().includes(searchTerm)
+            );
+            const tbody = document.getElementById('equipment-list');
+            tbody.innerHTML = filtered.map(item => '<tr>' +
+                '<td>' + (item.name || '-') + '</td>' +
+                '<td>' + (item.model || '-') + '</td>' +
+                '<td>' + (item.location || '-') + '</td>' +
+                '<td>' + (item.nextInspectionDate || '-') + '</td>' +
+                '<td><span class="badge ' + getStatusBadge(item.status) + '">' + (item.status || '未知') + '</span></td>' +
+                '<td class="actions">' +
+                    '<button class="btn-small btn-primary" onclick="editEquipment("' + item.id + '")">编辑</button>' +
+                    '<button class="btn-small btn-danger" onclick="deleteEquipment("' + item.id + '")">删除</button>' +
+                '</td>' +
+            '</tr>').join('');
+        }
+
+        function searchEquipment() {
+            renderEquipmentList();
+        }
+
+        function editEquipment(id) {
+            const equipment = getData(StorageKeys.EQUIPMENT);
+            const item = equipment.find(e => e.id === id);
+            if (!item) {
+                alert('未找到该设备！');
+                return;
+            }
+            
+            document.getElementById('equipment-id').value = item.id || '';
+            document.getElementById('eq-name').value = item.name || '';
+            document.getElementById('eq-model').value = item.model || '';
+            document.getElementById('eq-manufacturer').value = item.manufacturer || '';
+            document.getElementById('eq-production').value = item.productionDate || '';
+            document.getElementById('eq-install').value = item.installDate || '';
+            document.getElementById('eq-location').value = item.location || '';
+            document.getElementById('eq-inspection').value = item.inspectionDate || '';
+            document.getElementById('eq-next-inspection').value = item.nextInspectionDate || '';
+            document.getElementById('eq-status').value = item.status || '正常运行';
+            document.getElementById('eq-responsible').value = item.responsible || '';
+            document.getElementById('eq-remarks').value = item.remarks || '';
+            
+            document.getElementById('equipment-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteEquipment(id) {
+            if (!confirm('确定要删除该设备吗？')) return;
+            let equipment = getData(StorageKeys.EQUIPMENT);
+            equipment = equipment.filter(item => item.id !== id);
+            saveData(StorageKeys.EQUIPMENT, equipment);
+            renderEquipmentList();
+            updateStats();
+        }
+
+        function getStatusBadge(status) {
+            const map = { '正常运行': 'badge-success', '待机中': 'badge-info', '维修中': 'badge-warning', '已报废': 'badge-danger' };
+            return map[status] || 'badge-info';
+        }
+
+        // ==================== 检查台账 - 修复版 ====================
+        function updateEquipmentSelect() {
+            const equipment = getData(StorageKeys.EQUIPMENT);
+            const select = document.getElementById('in-equipment');
+            select.innerHTML = '<option value="">请选择设备</option>' +
+                equipment.map(item => '<option value="' + item.id + '">' + item.name + ' (' + item.model + ')</option>').join('');
+        }
+
+        function handleInspectionSubmit(e) {
+            e.preventDefault();
+            const equipment = getData(StorageKeys.EQUIPMENT);
+            const eqId = document.getElementById('in-equipment').value;
+            const eqItem = equipment.find(item => item.id === eqId);
+            const id = document.getElementById('inspection-id').value;
+            const data = {
+                id: id || generateId(),
+                equipmentId: eqId,
+                equipmentName: eqItem ? eqItem.name : '',
+                checkDate: document.getElementById('in-date').value,
+                checkType: document.getElementById('in-type').value,
+                result: document.getElementById('in-result').value,
+                nextCheckDate: document.getElementById('in-next').value,
+                checker: document.getElementById('in-checker').value,
+                remarks: document.getElementById('in-remarks').value
+            };
+            
+            let inspections = getData(StorageKeys.INSPECTION);
+            if (id) {
+                const index = inspections.findIndex(item => item.id === id);
+                if (index !== -1) inspections[index] = data;
+            } else {
+                inspections.push(data);
+            }
+            
+            if (saveData(StorageKeys.INSPECTION, inspections)) {
+                alert(id ? '记录更新成功！' : '记录添加成功！');
+                resetInspectionForm();
+                renderInspectionList();
+                updateStats();
+            }
+        }
+
+        function resetInspectionForm() {
+            document.getElementById('inspection-form').reset();
+            document.getElementById('inspection-id').value = '';
+        }
+
+        function renderInspectionList() {
+            const inspections = getData(StorageKeys.INSPECTION);
+            const tbody = document.getElementById('inspection-list');
+            tbody.innerHTML = inspections.map(item => '<tr>' +
+                '<td>' + (item.equipmentName || '-') + '</td>' +
+                '<td>' + (item.checkDate || '-') + '</td>' +
+                '<td>' + (item.checkType || '-') + '</td>' +
+                '<td><span class="badge ' + getResultBadge(item.result) + '">' + (item.result || '-') + '</span></td>' +
+                '<td>' + (item.nextCheckDate || '-') + '</td>' +
+                '<td class="actions">' +
+                    '<button class="btn-small btn-primary" onclick="editInspection("' + item.id + '")">编辑</button>' +
+                    '<button class="btn-small btn-danger" onclick="deleteInspection("' + item.id + '")">删除</button>' +
+                '</td>' +
+            '</tr>').join('');
+        }
+
+        function getResultBadge(result) {
+            const map = { '合格': 'badge-success', '基本合格': 'badge-info', '不合格': 'badge-danger', '需整改': 'badge-warning' };
+            return map[result] || 'badge-info';
+        }
+
+        function editInspection(id) {
+            const inspections = getData(StorageKeys.INSPECTION);
+            const item = inspections.find(i => i.id === id);
+            if (!item) {
+                alert('未找到该记录！');
+                return;
+            }
+            
+            document.getElementById('inspection-id').value = item.id || '';
+            document.getElementById('in-equipment').value = item.equipmentId || '';
+            document.getElementById('in-date').value = item.checkDate || '';
+            document.getElementById('in-type').value = item.checkType || '日常巡检';
+            document.getElementById('in-result').value = item.result || '合格';
+            document.getElementById('in-next').value = item.nextCheckDate || '';
+            document.getElementById('in-checker').value = item.checker || '';
+            document.getElementById('in-remarks').value = item.remarks || '';
+            
+            document.getElementById('inspection-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteInspection(id) {
+            if (!confirm('确定要删除该记录吗？')) return;
+            let inspections = getData(StorageKeys.INSPECTION);
+            inspections = inspections.filter(item => item.id !== id);
+            saveData(StorageKeys.INSPECTION, inspections);
+            renderInspectionList();
+            updateStats();
+        }
+
+        // ==================== 合同管理 - 修复版 ====================
+        function handleContractSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('contract-id').value;
+            const data = {
+                id: id || generateId(),
+                contractNo: document.getElementById('ct-no').value,
+                type: document.getElementById('ct-type').value,
+                party: document.getElementById('ct-party').value,
+                startDate: document.getElementById('ct-start').value,
+                endDate: document.getElementById('ct-end').value,
+                amount: document.getElementById('ct-amount').value,
+                status: document.getElementById('ct-status').value,
+                remarks: document.getElementById('ct-remarks').value
+            };
+            
+            let contracts = getData(StorageKeys.CONTRACT);
+            if (id) {
+                const index = contracts.findIndex(item => item.id === id);
+                if (index !== -1) contracts[index] = data;
+            } else {
+                contracts.push(data);
+            }
+            
+            if (saveData(StorageKeys.CONTRACT, contracts)) {
+                alert(id ? '合同更新成功！' : '合同添加成功！');
+                resetContractForm();
+                renderContractList();
+                updateStats();
+            }
+        }
+
+        function resetContractForm() {
+            document.getElementById('contract-form').reset();
+            document.getElementById('contract-id').value = '';
+        }
+
+        function renderContractList() {
+            const contracts = getData(StorageKeys.CONTRACT);
+            const tbody = document.getElementById('contract-list');
+            tbody.innerHTML = contracts.map(item => '<tr>' +
+                '<td>' + (item.contractNo || '-') + '</td>' +
+                '<td>' + (item.type || '-') + '</td>' +
+                '<td>' + (item.party || '-') + '</td>' +
+                '<td>' + (item.endDate || '-') + '</td>' +
+                '<td><span class="badge ' + getContractBadge(item.status) + '">' + (item.status || '-') + '</span></td>' +
+                '<td class="actions">' +
+                    '<button class="btn-small btn-primary" onclick="editContract("' + item.id + '")">编辑</button>' +
+                    '<button class="btn-small btn-danger" onclick="deleteContract("' + item.id + '")">删除</button>' +
+                '</td>' +
+            '</tr>').join('');
+        }
+
+        function getContractBadge(status) {
+            const map = { '执行中': 'badge-success', '即将到期': 'badge-warning', '已到期': 'badge-danger', '已终止': 'badge-info' };
+            return map[status] || 'badge-info';
+        }
+
+        function editContract(id) {
+            const contracts = getData(StorageKeys.CONTRACT);
+            const item = contracts.find(c => c.id === id);
+            if (!item) {
+                alert('未找到该合同！');
+                return;
+            }
+            
+            document.getElementById('contract-id').value = item.id || '';
+            document.getElementById('ct-no').value = item.contractNo || '';
+            document.getElementById('ct-type').value = item.type || '维保合同';
+            document.getElementById('ct-party').value = item.party || '';
+            document.getElementById('ct-start').value = item.startDate || '';
+            document.getElementById('ct-end').value = item.endDate || '';
+            document.getElementById('ct-amount').value = item.amount || '';
+            document.getElementById('ct-status').value = item.status || '执行中';
+            document.getElementById('ct-remarks').value = item.remarks || '';
+            
+            document.getElementById('contract-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteContract(id) {
+            if (!confirm('确定要删除该合同吗？')) return;
+            let contracts = getData(StorageKeys.CONTRACT);
+            contracts = contracts.filter(item => item.id !== id);
+            saveData(StorageKeys.CONTRACT, contracts);
+            renderContractList();
+            updateStats();
+        }
+
+        // ==================== 安全检查 - 修复版 ====================
+        function handleSafetySubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('safety-id').value;
+            const data = {
+                id: id || generateId(),
+                checkDate: document.getElementById('sf-date').value,
+                location: document.getElementById('sf-location').value,
+                hazardType: document.getElementById('sf-hazard').value,
+                severity: document.getElementById('sf-severity').value,
+                deadline: document.getElementById('sf-deadline').value,
+                responsible: document.getElementById('sf-responsible').value,
+                status: document.getElementById('sf-status').value,
+                description: document.getElementById('sf-description').value
+            };
+            
+            let safety = getData(StorageKeys.SAFETY);
+            if (id) {
+                const index = safety.findIndex(item => item.id === id);
+                if (index !== -1) safety[index] = data;
+            } else {
+                safety.push(data);
+            }
+            
+            if (saveData(StorageKeys.SAFETY, safety)) {
+                alert(id ? '记录更新成功！' : '记录添加成功！');
+                resetSafetyForm();
+                renderSafetyList();
+                updateStats();
+            }
+        }
+
+        function resetSafetyForm() {
+            document.getElementById('safety-form').reset();
+            document.getElementById('safety-id').value = '';
+        }
+
+        function renderSafetyList() {
+            const safety = getData(StorageKeys.SAFETY);
+            const tbody = document.getElementById('safety-list');
+            tbody.innerHTML = safety.map(item => '<tr>' +
+                '<td>' + (item.checkDate || '-') + '</td>' +
+                '<td>' + (item.location || '-') + '</td>' +
+                '<td>' + (item.hazardType || '-') + '</td>' +
+                '<td><span class="badge ' + getSeverityBadge(item.severity) + '">' + (item.severity || '-') + '</span></td>' +
+                '<td><span class="badge ' + getSafetyStatusBadge(item.status) + '">' + (item.status || '-') + '</span></td>' +
+                '<td class="actions">' +
+                    '<button class="btn-small btn-primary" onclick="editSafety("' + item.id + '")">编辑</button>' +
+                    '<button class="btn-small btn-danger" onclick="deleteSafety("' + item.id + '")">删除</button>' +
+                '</td>' +
+            '</tr>').join('');
+        }
+
+        function getSeverityBadge(severity) {
+            const map = { '一般': 'badge-info', '较重': 'badge-warning', '严重': 'badge-danger' };
+            return map[severity] || 'badge-info';
+        }
+
+        function getSafetyStatusBadge(status) {
+            const map = { '待整改': 'badge-danger', '整改中': 'badge-warning', '已整改': 'badge-info', '已验收': 'badge-success' };
+            return map[status] || 'badge-info';
+        }
+
+        function editSafety(id) {
+            const safety = getData(StorageKeys.SAFETY);
+            const item = safety.find(s => s.id === id);
+            if (!item) {
+                alert('未找到该记录！');
+                return;
+            }
+            
+            document.getElementById('safety-id').value = item.id || '';
+            document.getElementById('sf-date').value = item.checkDate || '';
+            document.getElementById('sf-location').value = item.location || '';
+            document.getElementById('sf-hazard').value = item.hazardType || '设备隐患';
+            document.getElementById('sf-severity').value = item.severity || '一般';
+            document.getElementById('sf-deadline').value = item.deadline || '';
+            document.getElementById('sf-responsible').value = item.responsible || '';
+            document.getElementById('sf-status').value = item.status || '待整改';
+            document.getElementById('sf-description').value = item.description || '';
+            
+            document.getElementById('safety-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteSafety(id) {
+            if (!confirm('确定要删除该记录吗？')) return;
+            let safety = getData(StorageKeys.SAFETY);
+            safety = safety.filter(item => item.id !== id);
+            saveData(StorageKeys.SAFETY, safety);
+            renderSafetyList();
+            updateStats();
+        }
+
+        // ==================== 特种人员管理 - 修复版 ====================
+        function handlePersonSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('person-id').value;
+            const expiryDate = document.getElementById('ps-expiry').value;
