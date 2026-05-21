@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>特种设备管理系统</title>
+    <title>青白江冷链信息管理平台</title>
     <style>
         * {
             margin: 0;
@@ -186,8 +186,8 @@
     <div class="container">
         <!-- 侧边栏 -->
         <div class="sidebar">
-            <div class="logo">特种设备管理系统</div>
-            <div class="menu-item active" onclick="showSection('dashboard')">仪表盘</div>
+            <div class="logo">青白江冷链信息管理平台</div>
+            <div class="menu-item active" onclick="showSection('dashboard')">信息汇总</div>
             <div class="menu-item" onclick="showSection('equipment')">特种设备管理</div>
             <div class="menu-item" onclick="showSection('inspection')">检查台账</div>
             <div class="menu-item" onclick="showSection('contract')">合同管理</div>
@@ -202,7 +202,7 @@
                 <div id="current-date"></div>
             </div>
 
-            <!-- 仪表盘 -->
+            <!-- 信息汇总 -->
             <div id="dashboard" class="content-section active">
                 <h3>系统概览</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
@@ -354,7 +354,6 @@
                         <tr>
                             <th>姓名</th>
                             <th>作业类型</th>
-                            <th>证件号</th>
                             <th>发证日期</th>
                             <th>换证日期</th>
                             <th>状态</th>
@@ -800,7 +799,7 @@
                         </div>
                         <div class="form-group">
                             <label>设备名称:</label>
-                            <select id="inspection-equipment" required>
+                            <input id="inspection-equipment" required>
                                 ${equipmentData.map(e => `<option value="${e.name}" ${data && data.equipment === e.name ? 'selected' : ''}>${e.name}</option>`).join('')}
                             </select>
                         </div>
