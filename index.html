@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青白江冷链综合管理平台V1.0</title>
+    <style>
+        :root {
+            --primary-color: #1a5f7a; /* 冷链深蓝 */
+            --secondary-bg: #e3f2fd; /* 浅蓝色二级菜单背景 */
+            --secondary-text: #1565c0;
+            --accent-color: #1976d2;
+            --text-light: #ffffff;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+            --bg-color: #f0f2f5;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Microsoft YaHei', sans-serif; }
+        body { display: flex; height: 100vh; background-color: var(--bg-color); color: #333; }
+
+        /* 左侧导航栏 */
+        .sidebar {
+            width: 260px;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        .brand { 
+            font-size: 20px; 
+            font-weight: bold; 
+            text-align: center; 
+            padding: 25px 10px; 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            letter-spacing: 1px;
+        }
+        
+        .menu-container { flex: 1; overflow-y: auto; padding-top: 10px; }
+        .menu-item { cursor: pointer; user-select: none; }
+        
+        .menu-title {
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+            font-size: 15px;
+        }
+        .menu-title:hover { background-color: rgba(255,255,255,0.1); }
+        
+        /* 菜单名称修改图标 */
+        .edit-icon { 
+            font-size: 12px; 
+            opacity: 0.5; 
+            padding: 4px 8px; 
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .edit-icon:hover { opacity: 1; background: rgba(255,255,255,0.2); }
+
+        /* 二级菜单浅色设计 */
+        .submenu {
+            background-color: var(--secondary-bg);
+            display: none;
+        }
+        .submenu.open { display: block; }
+        .submenu-item {
+            padding: 12px 25px 12px 50px;
+            color: var(--secondary-text);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+        .submenu-item:hover { background-color: #bbdefb; }
+        .submenu-item.active {
+            background-color: #fff;
+            border-left-color: var(--accent-color);
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* 主内容区域 */
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        .header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .header h2 { color: var(--primary-color); font-size: 24px; }
+        .header span { font-size: 14px; color: #666; background: #fff; padding: 5px 15px; border-radius: 20px; }
+        
+        .module-section { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .module-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+
+        /* 表单与表格样式 */
+        .form-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+        input, select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            outline: none;
+            flex: 1;
+            min-width: 150px;
+            font-size: 14px;
+        }
+        input:focus, select:focus { border-color: var(--accent-color); box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1); }
+        
+        button.add-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+            flex: 0 0 auto;
+        }
+        button.add-btn:hover { background-color: #1565c0; }
+        
+        button.delete-btn { 
+            background-color: #ffebee; 
+            color: var(--danger-color); 
+            border: none; 
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        button.delete-btn:hover { background-color: var(--danger-color); color: white; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        th, td { padding: 14px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f9fa; color: #444; font-weight: 600; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #fcfcfc; }
+
+        /* 预警标签 */
+        .warning-tag {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+<!-- 左侧导航栏 -->
+<div class="sidebar">
+    <div class="brand">❄️ 青白江冷链平台</div>
+    <div class="menu-container" id="menu-container"></div>
+</div>
+
+<!-- 右侧主内容 -->
+<div class="main-content">
+    <div class="header">
+        <h2 id="page-title">特种设备台账</h2>
+        <span>👤 管理员在线</span>
+    </div>
+
+    <!-- 1. 特种设备模块 -->
+    <div id="module-equipment" class="module-section active">
+        <div class="card">
+            <h3 style="margin-bottom: 15px; color: var(--primary-color);">添加新设备</h3>
+            <div class="form-row">
+                <input type="text" id="eq-name" placeholder="设备名称 (如: 1号冷库机组)">
+                <input type="text" id="eq-model" placeholder="型号规格">
+                <input type="date" id="eq-prod-date" title="生产日期">
+                <input type="date" id="eq-check-date" title="最近检测日期">
+                <input type="date" id="eq-next-date" title="下次检测日期">
+                <button class="add-btn" onclick="addEquipment()">➕ 录入设备</button>
+            </div>
+            <table>
+                <thead><tr><th>设备名称</th><th>型号</th><th>生产日期</th><th>检测日期</th><th>下次检测</th><th>操作</th></tr></thead>
+                <tbody id="equipment-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 2. 检查台账模块 -->
+    <div id="module-ledger" class="module-section">
+        <div class="card">
+            <h3 style="margin-bottom: 15px; color: var(--primary-color);">新增检查记录</h3>
+            <div class="form-row">
+                <input type="text" id="lg-name" placeholder="检查项目/设备">
+                <input type="date" id="lg-date">
+                <input type="text" id="lg-result" placeholder="检查结果/情况">
+                <button class="add-btn" onclick="addLedger()">➕ 添加记录</button>
+            </div>
+            <table>
+                <thead><tr><th>检查项目</th><th>检查日期</th><th>结果详情</th><th>操作</th></tr></thead>
+                <tbody id="ledger-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 3. 合同管理模块 -->
+    <div id="module-contract" class="module-section">
+        <div class="card">
+            <h3 style="margin-bottom: 15px; color: var(--primary-color);">登记新合同</h3>
+            <div class="form-row">
+                <input type="text" id="ct-name" placeholder="合同名称">
+                <input type="text" id="ct-party" placeholder="签约合作方">
+                <input type="date" id="ct-date">
+                <button class="add-btn" onclick="addContract()">➕ 添加合同</button>
+            </div>
+            <table>
+                <thead><tr><th>合同名称</th><th>签约方</th><th>签订日期</th><th>操作</th></tr></thead>
+                <tbody id="contract-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 4. 安全检查模块 -->
+    <div id="module-safety" class="module-section">
+        <div class="card">
+            <h3 style="margin-bottom: 15px; color: var(--primary-color);">安全隐患排查</h3>
+            <div class="form-row">
+                <input type="text" id="sf-area" placeholder="检查区域 (如: 氨机房)">
+                <select id="sf-status"><option value="正常">✅ 状态正常</option><option value="存在隐患">⚠️ 存在隐患</option></select>
+                <input type="text" id="sf-desc" placeholder="隐患描述或备注">
+                <button class="add-btn" onclick="addSafety()">➕ 提交检查</button>
+            </div>
+            <table>
+                <thead><tr><th>检查区域</th><th>当前状态</th><th>详细描述</th><th>提交时间</th><th>操作</th></tr></thead>
+                <tbody id="safety-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 5. 特种作业人员模块 -->
+    <div id="module-personnel" class="module-section">
+        <div class="card">
+            <h3 style="margin-bottom: 15px; color: var(--primary-color);">人员资质录入</h3>
+            <div class="form-row">
+                <input type="text" id="ps-name" placeholder="人员姓名">
+                <select id="ps-type">
+                    <option value="制冷与空调设备运行操作作业">制冷与空调设备运行操作作业</option>
+                    <option value="制冷与空调设备安装修理作业">制冷与空调设备安装修理作业</option>
+                </select>
+                <input type="date" id="ps-issue-date" title="发证日期">
+                <input type="date" id="ps-renew-date" title="换证日期">
+                <button class="add-btn" onclick="addPersonnel()">➕ 添加人员</button>
+            </div>
+            <table>
+                <thead><tr><th>姓名</th><th>作业类型</th><th>发证日期</th><th>换证日期</th><th>证书状态</th><th>操作</th></tr></thead>
+                <tbody id="personnel-list"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 默认配置与数据结构 ---
+    const defaultMenu = [
+        { id: 'm1', name: '特种设备管理', sub: [{id:'module-equipment', name:'设备全生命周期台账'}] },
+        { id: 'm2', name: '各类检查台账', sub: [{id:'module-ledger', name:'日常巡检记录'}] },
+        { id: 'm3', name: '合同管理中心', sub: [{id:'module-contract', name:'业务合同列表'}] },
+        { id: 'm4', name: '安全管控板块', sub: [{id:'module-safety', name:'安全隐患排查'}] },
+        { id: 'm5', name: '人员资质管理', sub: [{id:'module-personnel', name:'特种作业人员档案'}] }
+    ];
+
+    let appData = JSON.parse(localStorage.getItem('qingbaijiangColdChainData')) || {
+        menu: defaultMenu,
+        equipment: [], ledger: [], contract: [], safety: [], personnel: []
+    };
+
+    // --- 初始化与渲染 ---
+    function init() {
+        renderMenu();
+        switchModule('module-equipment', '特种设备台账');
+        renderAllTables();
+    }
+
+    // 渲染左侧菜单
+    function renderMenu() {
+        const container = document.getElementById('menu-container');
+        container.innerHTML = '';
+        appData.menu.forEach((item, index) => {
+            const menuItem = document.createElement('div');
+            menuItem.className = 'menu-item';
+            menuItem.innerHTML = `
+                <div class="menu-title">
+                    <span>${item.name}</span>
+                    <span class="edit-icon" onclick="editMenuName(${index}, event)">✏️ 改名</span>
+                </div>
+                <div class="submenu">
+                    ${item.sub.map(sub => `<div class="submenu-item" onclick="switchModule('${sub.id}', '${sub.name}', this)">${sub.name}</div>`).join('')}
+                </div>
+            `;
+            // 点击一级菜单展开/收起二级菜单
+            menuItem.querySelector('.menu-title').onclick = (e) => {
+                if(!e.target.classList.contains('edit-icon')) {
+                    const sub = menuItem.querySelector('.submenu');
+                    sub.classList.toggle('open');
+                }
+            };
+            container.appendChild(menuItem);
+        });
+    }
+
+    // 修改菜单名称
+    function editMenuName(index, event) {
+        event.stopPropagation(); // 阻止冒泡防止触发折叠
+        const newName = prompt("请输入新的菜单名称：", appData.menu[index].name);
+        if (newName && newName.trim() !== "") {
+            appData.menu[index].name = newName;
+            saveData();
+            renderMenu();
+        }
+    }
+
+    // 切换模块显示
+    function switchModule(moduleId, title, element) {
+        document.querySelectorAll('.module-section').forEach(el => el.classList.remove('active'));
+        document.getElementById(moduleId).classList.add('active');
+        document.getElementById('page-title').innerText = title;
+        
+        // 更新二级菜单高亮
+        if(element) {
+            document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+    }
+
+    // --- 通用数据操作 ---
+    function saveData() {
+        localStorage.setItem('qingbaijiangColdChainData', JSON.stringify(appData));
+        renderAllTables();
+    }
+
+    function deleteItem(type, id) {
+        if(confirm('确定要删除这条记录吗？此操作不可恢复。')) {
+            appData[type] = appData[type].filter(item => item.id !== id);
+            saveData();
+        }
+    }
+
+    function renderAllTables() {
+        renderTable('equipment', appData.equipment, ['name','model','prodDate','checkDate','nextDate']);
+        renderTable('ledger', appData.ledger, ['name','date','result']);
+        renderTable('contract', appData.contract, ['name','party','date']);
+        renderSafetyTable();
+        renderPersonnelTable();
+    }
+
+    function renderTable(type, data, fields) {
+        const tbody = document.getElementById(`${type}-list`);
+        if(data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="100%" style="text-align:center; color:#999;">暂无数据，请添加</td></tr>';
+            return;
+        }
+        tbody.innerHTML = data.map(item => `
+            <tr>
+                ${fields.map(f => `<td>${item[f]}</td>`).join('')}
+                <td><button class="delete-btn" onclick="deleteItem('${type}', ${item.id})">🗑️ 删除</button></td>
+            </tr>
+        `).join('');
+    }
+
+    // --- 各模块具体逻辑 ---
+    // 1. 特种设备
+    function addEquipment() {
+        const item = {
+            id: Date.now(),
+            name: document.getElementById('eq-name').value,
+            model: document.getElementById('eq-model').value,
+            prodDate: document.getElementById('eq-prod-date').value,
+            checkDate: document.getElementById('eq-check-date').value,
+            nextDate: document.getElementById('eq-next-date').value
+        };
+        if(!item.name) return alert('请填写设备名称');
+        appData.equipment.push(item);
+        clearInputs(['eq-name','eq-model','eq-prod-date','eq-check-date','eq-next-date']);
+        saveData();
+    }
+
+    // 2. 检查台账
+    function addLedger() {
+        const item = { id: Date.now(), name: document.getElementById('lg-name').value, date: document.getElementById('lg-date').value, result: document.getElementById('lg-result').value };
+        if(!item.name) return alert('请填写检查项目');
+        appData.ledger.push(item);
+        clearInputs(['lg-name','lg-date','lg-result']);
+        saveData();
+    }
+
+    // 3. 合同管理
+    function addContract() {
+        const item = { id: Date.now(), name: document.getElementById('ct-name').value, party: document.getElementById('ct-party').value, date: document.getElementById('ct-date').value };
+        if(!item.name) return alert('请填写合同名称');
+        appData.contract.push(item);
+        clearInputs(['ct-name','ct-party','ct-date']);
+        saveData();
+    }
+
+    // 4. 安全检查
+    function addSafety() {
+        const item = { id: Date.now(), area: document.getElementById('sf-area').value, status: document.getElementById('sf-status').value, desc: document.getElementById('sf-desc').value, time: new Date().toLocaleString() };
+        if(!item.area) return alert('请填写检查区域');
+        appData.safety.push(item);
+        clearInputs(['sf-area','sf-desc']);
+        saveData();
+    }
+    function renderSafetyTable() {
+        const tbody = document.getElementById('safety-list');
+        if(appData.safety.length === 0) { tbody.innerHTML = '<tr><td colspan="100%" style="text-align:center; color:#999;">暂无数据</td></tr>'; return; }
+        tbody.innerHTML = appData.safety.map(item => `
+            <tr>
+                <td>${item.area}</td>
+                <td><span style="color:${item.status==='正常'?'var(--success-color)':'var(--danger-color)'}; font-weight:bold;">${item.status}</span></td>
+                <td>${item.desc}</td>
+                <td>${item.time}</td>
+                <td><button class="delete-btn" onclick="deleteItem('safety', ${item.id})">🗑️ 删除</button></td>
+            </tr>
+        `).join('');
+    }
+
+    //
