@@ -37,37 +37,56 @@
         }
         
         .sidebar-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
             margin-bottom: 5px;
+            text-align: center;
         }
         
         .sidebar-subtitle {
-            font-size: 13px;
+            font-size: 14px;
             opacity: 0.8;
+            text-align: center;
+        }
+        
+        .nav-section {
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            padding: 10px 20px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         
         .nav-item {
-            padding: 14px 25px;
+            padding: 14px 30px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             font-size: 15px;
+            border-left: 3px solid transparent;
         }
         
         .nav-item i {
             margin-right: 12px;
             font-size: 18px;
+            width: 24px;
+            text-align: center;
         }
         
         .nav-item:hover {
             background: rgba(255,255,255,0.1);
+            border-left: 3px solid rgba(255,255,255,0.5);
         }
         
         .nav-item.active {
             background: rgba(255,255,255,0.2);
-            border-left: 5px solid #fff;
+            border-left: 3px solid #fff;
         }
         
         .main-content {
@@ -469,23 +488,38 @@
             <div class="sidebar-title">冷链管理平台</div>
             <div class="sidebar-subtitle">青白江专用</div>
         </div>
-        <div class="nav-item active" data-panel="dashboard">
-            <i>📊</i> 控制面板
+        
+        <div class="nav-section">
+            <div class="section-title">基础管理</div>
+            <div class="nav-item active" data-panel="dashboard">
+                <i>📊</i> 控制面板
+            </div>
+            <div class="nav-item" data-panel="equipment">
+                <i>⚙️</i> 特种设备管理
+            </div>
+            <div class="nav-item" data-panel="personnel">
+                <i>👥</i> 特种作业人员管理
+            </div>
         </div>
-        <div class="nav-item" data-panel="equipment">
-            <i>⚙️</i> 特种设备管理
+        
+        <div class="nav-section">
+            <div class="section-title">业务管理</div>
+            <div class="nav-item" data-panel="contract">
+                <i>📋</i> 合同管理
+            </div>
+            <div class="nav-item" data-panel="inspection">
+                <i>🔍</i> 安全检查记录
+            </div>
         </div>
-        <div class="nav-item" data-panel="personnel">
-            <i>👥</i> 特种作业人员管理
-        </div>
-        <div class="nav-item" data-panel="contract">
-            <i>📋</i> 合同管理
-        </div>
-        <div class="nav-item" data-panel="inspection">
-            <i>🔍</i> 安全检查记录
-        </div>
-        <div class="nav-item" data-panel="inventory">
-            <i>📦</i> 货物出入库管理
+        
+        <div class="nav-section">
+            <div class="section-title">库存管理</div>
+            <div class="nav-item" data-panel="inventory-in">
+                <i>📥</i> 入库管理
+            </div>
+            <div class="nav-item" data-panel="inventory-out">
+                <i>📤</i> 出库管理
+            </div>
         </div>
     </div>
     
@@ -546,7 +580,8 @@
                         <li>特种作业人员管理：管理持证上岗人员信息</li>
                         <li>合同管理：跟踪客户服务合同状态</li>
                         <li>安全检查记录：记录日常安全检查情况</li>
-                        <li>货物出入库管理：管理货物的入库、出库记录</li>
+                        <li>货物入库管理：管理货物的入库记录</li>
+                        <li>货物出库管理：管理货物的出库记录</li>
                     </ul>
                 </div>
             </div>
@@ -943,268 +978,263 @@
                 </div>
             </div>
             
-            <div id="inventory-panel" class="panel">
-                <h2 class="panel-title">货物出入库管理</h2>
+            <!-- 入库管理面板 -->
+            <div id="inventory-in-panel" class="panel">
+                <h2 class="panel-title">货物入库管理</h2>
                 
-                <div class="tab-container">
-                    <button class="tab-button active" data-tab="inbound">入库管理</button>
-                    <button class="tab-button" data-tab="outbound">出库管理</button>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="搜索入库单号、货物名称...">
+                    <button class="btn-small search-inventory-in">搜索</button>
                 </div>
                 
-                <!-- 入库管理 -->
-                <div id="inbound-tab" class="inventory-tab active">
-                    <div class="search-bar">
-                        <input type="text" class="search-input" placeholder="搜索入库单号、货物名称..." data-type="inbound">
-                        <button class="btn-small search-inventory" data-type="inbound">搜索</button>
-                    </div>
-                    
-                    <div class="data-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>入库单号</th>
-                                <th>货物名称</th>
-                                <th>数量</th>
-                                <th>单位</th>
-                                <th>厂家</th>
-                                <th>入库时间</th>
-                                <th>车辆信息</th>
-                                <th>备注</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inbound-table-body">
-                            <!-- 表格内容由JavaScript生成 -->
-                        </tbody>
-                    </table>
-                    </div>
-                    
-                    <div id="inbound-edit-form" class="edit-form">
-                        <h3>编辑入库记录</h3>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>入库单号:</label>
-                                <input type="text" id="edit-inbound-id" readonly>
-                            </div>
-                            <div class="form-col">
-                                <label>货物名称:</label>
-                                <input type="text" id="edit-inbound-name">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>数量:</label>
-                                <input type="number" id="edit-inbound-quantity">
-                            </div>
-                            <div class="form-col">
-                                <label>单位:</label>
-                                <select id="edit-inbound-unit">
-                                    <option value="件">件</option>
-                                    <option value="箱">箱</option>
-                                    <option value="公斤">公斤</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>厂家:</label>
-                                <input type="text" id="edit-inbound-manufacturer">
-                            </div>
-                            <div class="form-col">
-                                <label>入库时间:</label>
-                                <input type="datetime-local" id="edit-inbound-time">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>车辆信息:</label>
-                                <input type="text" id="edit-inbound-vehicle">
-                            </div>
-                            <div class="form-col">
-                                <label>备注:</label>
-                                <input type="text" id="edit-inbound-note">
-                            </div>
-                        </div>
-                        <button id="save-inbound-btn">保存更改</button>
-                        <button id="cancel-inbound-btn" class="btn-danger">取消</button>
-                    </div>
-                    
-                    <div style="margin-top: 15px;">
-                        <h3>新增入库记录</h3>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>入库单号:</label>
-                                <input type="text" id="new-inbound-id" placeholder="请输入入库单号">
-                            </div>
-                            <div class="form-col">
-                                <label>货物名称:</label>
-                                <input type="text" id="new-inbound-name" placeholder="请输入货物名称">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>数量:</label>
-                                <input type="number" id="new-inbound-quantity" placeholder="请输入数量">
-                            </div>
-                            <div class="form-col">
-                                <label>单位:</label>
-                                <select id="new-inbound-unit">
-                                    <option value="件">件</option>
-                                    <option value="箱">箱</option>
-                                    <option value="公斤">公斤</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>厂家:</label>
-                                <input type="text" id="new-inbound-manufacturer" placeholder="请输入厂家">
-                            </div>
-                            <div class="form-col">
-                                <label>入库时间:</label>
-                                <input type="datetime-local" id="new-inbound-time">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>车辆信息:</label>
-                                <input type="text" id="new-inbound-vehicle" placeholder="请输入车辆信息">
-                            </div>
-                            <div class="form-col">
-                                <label>备注:</label>
-                                <input type="text" id="new-inbound-note" placeholder="请输入备注">
-                            </div>
-                        </div>
-                        <button id="add-inbound-btn">添加入库记录</button>
-                    </div>
+                <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>入库单号</th>
+                            <th>货物名称</th>
+                            <th>数量</th>
+                            <th>单位</th>
+                            <th>厂家</th>
+                            <th>入库时间</th>
+                            <th>车辆信息</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inbound-table-body">
+                        <!-- 表格内容由JavaScript生成 -->
+                    </tbody>
+                </table>
                 </div>
                 
-                <!-- 出库管理 -->
-                <div id="outbound-tab" class="inventory-tab">
-                    <div class="search-bar">
-                        <input type="text" class="search-input" placeholder="搜索出库单号、货物名称..." data-type="outbound">
-                        <button class="btn-small search-inventory" data-type="outbound">搜索</button>
+                <div id="inbound-edit-form" class="edit-form">
+                    <h3>编辑入库记录</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>入库单号:</label>
+                            <input type="text" id="edit-inbound-id" readonly>
+                        </div>
+                        <div class="form-col">
+                            <label>货物名称:</label>
+                            <input type="text" id="edit-inbound-name">
+                        </div>
                     </div>
-                    
-                    <div class="data-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>出库单号</th>
-                                <th>货物名称</th>
-                                <th>数量</th>
-                                <th>单位</th>
-                                <th>厂家</th>
-                                <th>出库时间</th>
-                                <th>车辆信息</th>
-                                <th>备注</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="outbound-table-body">
-                            <!-- 表格内容由JavaScript生成 -->
-                        </tbody>
-                    </table>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>数量:</label>
+                            <input type="number" id="edit-inbound-quantity">
+                        </div>
+                        <div class="form-col">
+                            <label>单位:</label>
+                            <select id="edit-inbound-unit">
+                                <option value="件">件</option>
+                                <option value="箱">箱</option>
+                                <option value="公斤">公斤</option>
+                            </select>
+                        </div>
                     </div>
-                    
-                    <div id="outbound-edit-form" class="edit-form">
-                        <h3>编辑出库记录</h3>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>出库单号:</label>
-                                <input type="text" id="edit-outbound-id" readonly>
-                            </div>
-                            <div class="form-col">
-                                <label>货物名称:</label>
-                                <input type="text" id="edit-outbound-name">
-                            </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>厂家:</label>
+                            <input type="text" id="edit-inbound-manufacturer">
                         </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>数量:</label>
-                                <input type="number" id="edit-outbound-quantity">
-                            </div>
-                            <div class="form-col">
-                                <label>单位:</label>
-                                <select id="edit-outbound-unit">
-                                    <option value="件">件</option>
-                                    <option value="箱">箱</option>
-                                    <option value="公斤">公斤</option>
-                                </select>
-                            </div>
+                        <div class="form-col">
+                            <label>入库时间:</label>
+                            <input type="datetime-local" id="edit-inbound-time">
                         </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>厂家:</label>
-                                <input type="text" id="edit-outbound-manufacturer">
-                            </div>
-                            <div class="form-col">
-                                <label>出库时间:</label>
-                                <input type="datetime-local" id="edit-outbound-time">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>车辆信息:</label>
-                                <input type="text" id="edit-outbound-vehicle">
-                            </div>
-                            <div class="form-col">
-                                <label>备注:</label>
-                                <input type="text" id="edit-outbound-note">
-                            </div>
-                        </div>
-                        <button id="save-outbound-btn">保存更改</button>
-                        <button id="cancel-outbound-btn" class="btn-danger">取消</button>
                     </div>
-                    
-                    <div style="margin-top: 15px;">
-                        <h3>新增出库记录</h3>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>出库单号:</label>
-                                <input type="text" id="new-outbound-id" placeholder="请输入出库单号">
-                            </div>
-                            <div class="form-col">
-                                <label>货物名称:</label>
-                                <input type="text" id="new-outbound-name" placeholder="请输入货物名称">
-                            </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>车辆信息:</label>
+                            <input type="text" id="edit-inbound-vehicle">
                         </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>数量:</label>
-                                <input type="number" id="new-outbound-quantity" placeholder="请输入数量">
-                            </div>
-                            <div class="form-col">
-                                <label>单位:</label>
-                                <select id="new-outbound-unit">
-                                    <option value="件">件</option>
-                                    <option value="箱">箱</option>
-                                    <option value="公斤">公斤</option>
-                                </select>
-                            </div>
+                        <div class="form-col">
+                            <label>备注:</label>
+                            <input type="text" id="edit-inbound-note">
                         </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>厂家:</label>
-                                <input type="text" id="new-outbound-manufacturer" placeholder="请输入厂家">
-                            </div>
-                            <div class="form-col">
-                                <label>出库时间:</label>
-                                <input type="datetime-local" id="new-outbound-time">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>车辆信息:</label>
-                                <input type="text" id="new-outbound-vehicle" placeholder="请输入车辆信息">
-                            </div>
-                            <div class="form-col">
-                                <label>备注:</label>
-                                <input type="text" id="new-outbound-note" placeholder="请输入备注">
-                            </div>
-                        </div>
-                        <button id="add-outbound-btn">添加出库记录</button>
                     </div>
+                    <button id="save-inbound-btn">保存更改</button>
+                    <button id="cancel-inbound-btn" class="btn-danger">取消</button>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <h3>新增入库记录</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>入库单号:</label>
+                            <input type="text" id="new-inbound-id" placeholder="请输入入库单号">
+                        </div>
+                        <div class="form-col">
+                            <label>货物名称:</label>
+                            <input type="text" id="new-inbound-name" placeholder="请输入货物名称">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>数量:</label>
+                            <input type="number" id="new-inbound-quantity" placeholder="请输入数量">
+                        </div>
+                        <div class="form-col">
+                            <label>单位:</label>
+                            <select id="new-inbound-unit">
+                                <option value="件">件</option>
+                                <option value="箱">箱</option>
+                                <option value="公斤">公斤</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>厂家:</label>
+                            <input type="text" id="new-inbound-manufacturer" placeholder="请输入厂家">
+                        </div>
+                        <div class="form-col">
+                            <label>入库时间:</label>
+                            <input type="datetime-local" id="new-inbound-time">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>车辆信息:</label>
+                            <input type="text" id="new-inbound-vehicle" placeholder="请输入车辆信息">
+                        </div>
+                        <div class="form-col">
+                            <label>备注:</label>
+                            <input type="text" id="new-inbound-note" placeholder="请输入备注">
+                        </div>
+                    </div>
+                    <button id="add-inbound-btn">添加入库记录</button>
+                </div>
+            </div>
+            
+            <!-- 出库管理面板 -->
+            <div id="inventory-out-panel" class="panel">
+                <h2 class="panel-title">货物出库管理</h2>
+                
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="搜索出库单号、货物名称...">
+                    <button class="btn-small search-inventory-out">搜索</button>
+                </div>
+                
+                <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>出库单号</th>
+                            <th>货物名称</th>
+                            <th>数量</th>
+                            <th>单位</th>
+                            <th>厂家</th>
+                            <th>出库时间</th>
+                            <th>车辆信息</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="outbound-table-body">
+                        <!-- 表格内容由JavaScript生成 -->
+                    </tbody>
+                </table>
+                </div>
+                
+                <div id="outbound-edit-form" class="edit-form">
+                    <h3>编辑出库记录</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>出库单号:</label>
+                            <input type="text" id="edit-outbound-id" readonly>
+                        </div>
+                        <div class="form-col">
+                            <label>货物名称:</label>
+                            <input type="text" id="edit-outbound-name">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>数量:</label>
+                            <input type="number" id="edit-outbound-quantity">
+                        </div>
+                        <div class="form-col">
+                            <label>单位:</label>
+                            <select id="edit-outbound-unit">
+                                <option value="件">件</option>
+                                <option value="箱">箱</option>
+                                <option value="公斤">公斤</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>厂家:</label>
+                            <input type="text" id="edit-outbound-manufacturer">
+                        </div>
+                        <div class="form-col">
+                            <label>出库时间:</label>
+                            <input type="datetime-local" id="edit-outbound-time">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>车辆信息:</label>
+                            <input type="text" id="edit-outbound-vehicle">
+                        </div>
+                        <div class="form-col">
+                            <label>备注:</label>
+                            <input type="text" id="edit-outbound-note">
+                        </div>
+                    </div>
+                    <button id="save-outbound-btn">保存更改</button>
+                    <button id="cancel-outbound-btn" class="btn-danger">取消</button>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <h3>新增出库记录</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>出库单号:</label>
+                            <input type="text" id="new-outbound-id" placeholder="请输入出库单号">
+                        </div>
+                        <div class="form-col">
+                            <label>货物名称:</label>
+                            <input type="text" id="new-outbound-name" placeholder="请输入货物名称">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>数量:</label>
+                            <input type="number" id="new-outbound-quantity" placeholder="请输入数量">
+                        </div>
+                        <div class="form-col">
+                            <label>单位:</label>
+                            <select id="new-outbound-unit">
+                                <option value="件">件</option>
+                                <option value="箱">箱</option>
+                                <option value="公斤">公斤</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>厂家:</label>
+                            <input type="text" id="new-outbound-manufacturer" placeholder="请输入厂家">
+                        </div>
+                        <div class="form-col">
+                            <label>出库时间:</label>
+                            <input type="datetime-local" id="new-outbound-time">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>车辆信息:</label>
+                            <input type="text" id="new-outbound-vehicle" placeholder="请输入车辆信息">
+                        </div>
+                        <div class="form-col">
+                            <label>备注:</label>
+                            <input type="text" id="new-outbound-note" placeholder="请输入备注">
+                        </div>
+                    </div>
+                    <button id="add-outbound-btn">添加出库记录</button>
                 </div>
             </div>
             
@@ -1254,42 +1284,7 @@
             
             // 绑定导航事件
             bindNavigationEvents();
-            
-            // 绑定库存管理标签页事件
-            bindInventoryTabEvents();
         });
-
-        // 绑定库存管理标签页事件
-        function bindInventoryTabEvents() {
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    const tabType = this.getAttribute('data-tab');
-                    
-                    // 移除所有活动状态
-                    document.querySelectorAll('.tab-button').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    
-                    // 添加当前活动状态
-                    this.classList.add('active');
-                    
-                    // 隐藏所有标签页
-                    document.querySelectorAll('.inventory-tab').forEach(tab => {
-                        tab.classList.remove('active');
-                    });
-                    
-                    // 显示对应标签页
-                    document.getElementById(`${tabType}-tab`).classList.add('active');
-                    
-                    // 重新渲染对应的表格
-                    if (tabType === 'inbound') {
-                        renderInboundTable();
-                    } else {
-                        renderOutboundTable();
-                    }
-                });
-            });
-        }
 
         // 绑定导航事件
         function bindNavigationEvents() {
@@ -1788,16 +1783,8 @@
             document.querySelector('.search-personnel').addEventListener('click', searchPersonnel);
             document.querySelector('.search-contract').addEventListener('click', searchContract);
             document.querySelector('.search-inspection').addEventListener('click', searchInspection);
-            document.querySelectorAll('.search-inventory').forEach(button => {
-                button.addEventListener('click', function() {
-                    const type = this.getAttribute('data-type');
-                    if (type === 'inbound') {
-                        searchInbound();
-                    } else {
-                        searchOutbound();
-                    }
-                });
-            });
+            document.querySelector('.search-inventory-in').addEventListener('click', searchInbound);
+            document.querySelector('.search-inventory-out').addEventListener('click', searchOutbound);
             
             // 回车键搜索
             document.querySelectorAll('.search-input').forEach(input => {
@@ -1812,13 +1799,10 @@
                             searchContract();
                         } else if (tableContainer.querySelector('.search-inspection')) {
                             searchInspection();
-                        } else {
-                            const type = this.getAttribute('data-type');
-                            if (type === 'inbound') {
-                                searchInbound();
-                            } else {
-                                searchOutbound();
-                            }
+                        } else if (tableContainer.querySelector('.search-inventory-in')) {
+                            searchInbound();
+                        } else if (tableContainer.querySelector('.search-inventory-out')) {
+                            searchOutbound();
                         }
                     }
                 });
@@ -2698,7 +2682,7 @@
         }
 
         function searchInbound() {
-            const searchTerm = document.querySelector('[data-type="inbound"]').closest('.search-bar').querySelector('input').value.toLowerCase();
+            const searchTerm = document.querySelector('.search-inventory-in').closest('.search-bar').querySelector('input').value.toLowerCase();
             if (!searchTerm) {
                 renderInboundTable();
                 return;
@@ -2714,7 +2698,7 @@
         }
 
         function searchOutbound() {
-            const searchTerm = document.querySelector('[data-type="outbound"]').closest('.search-bar').querySelector('input').value.toLowerCase();
+            const searchTerm = document.querySelector('.search-inventory-out').closest('.search-bar').querySelector('input').value.toLowerCase();
             if (!searchTerm) {
                 renderOutboundTable();
                 return;
