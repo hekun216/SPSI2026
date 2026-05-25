@@ -21,8 +21,6 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 15px;
-            display: flex;
-            flex-direction: column;
         }
         
         header {
@@ -53,61 +51,6 @@
         .subtitle {
             font-size: 14px;
             opacity: 0.9;
-        }
-        
-        .nav-container {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .nav-panel {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            width: 250px;
-            flex-shrink: 0;
-        }
-        
-        .nav-title {
-            font-size: 18px;
-            color: #1e3c72;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #eee;
-        }
-        
-        .nav-item {
-            display: block;
-            padding: 12px;
-            margin-bottom: 8px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #333;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .nav-item:hover {
-            background: #e3f2fd;
-            color: #1e3c72;
-            transform: translateX(3px);
-        }
-        
-        .nav-item.active {
-            background: #2196F3;
-            color: white;
-        }
-        
-        .content-container {
-            flex: 1;
-            display: none;
-        }
-        
-        .content-container.active {
-            display: block;
         }
         
         .info-cards {
@@ -154,6 +97,14 @@
             background: linear-gradient(to bottom, #9b59b6, #8e44ad);
         }
         
+        .info-card.inbound::before {
+            background: linear-gradient(to bottom, #2ecc71, #27ae60);
+        }
+        
+        .info-card.outbound::before {
+            background: linear-gradient(to bottom, #e67e22, #d35400);
+        }
+        
         .info-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
@@ -189,6 +140,16 @@
         .info-card.warning .card-icon {
             background: linear-gradient(135deg, #f3e5f5, #e1bee7);
             color: #8e44ad;
+        }
+        
+        .info-card.inbound .card-icon {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            color: #27ae60;
+        }
+        
+        .info-card.outbound .card-icon {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            color: #e67e22;
         }
         
         .card-content {
@@ -275,6 +236,16 @@
             font-weight: bold;
         }
         
+        .status-inbound {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        
+        .status-outbound {
+            color: #e67e22;
+            font-weight: bold;
+        }
+        
         .form-group {
             margin-bottom: 12px;
         }
@@ -326,6 +297,14 @@
         
         .btn-edit {
             background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
         }
         
         .btn-small {
@@ -424,23 +403,16 @@
             display: inline-block;
         }
         
-        .inventory-panel {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
+        .inbound-btn {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
         }
         
-        .inventory-nav {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            width: 200px;
-            flex-shrink: 0;
+        .outbound-btn {
+            background: linear-gradient(135deg, #e67e22, #d35400);
         }
         
-        .inventory-content {
-            flex: 1;
+        .stock-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
         }
     </style>
 </head>
@@ -452,784 +424,471 @@
             <div class="current-date" id="current-date">2026年05月22日</div>
         </header>
         
-        <div class="nav-container">
-            <!-- 左侧导航栏 -->
-            <div class="nav-panel">
-                <h2 class="nav-title">系统导航</h2>
-                <div class="nav-item active" data-target="dashboard">首页概览</div>
-                <div class="nav-item" data-target="equipment">特种设备管理</div>
-                <div class="nav-item" data-target="personnel">特种作业人员管理</div>
-                <div class="nav-item" data-target="contract">合同管理</div>
-                <div class="nav-item" data-target="inspection">安全检查记录</div>
-                <div class="nav-item" data-target="inbound">入库管理</div>
-                <div class="nav-item" data-target="outbound">出库管理</div>
+        <div class="info-cards">
+            <div class="info-card equipment">
+                <div class="card-icon">
+                    <i>⚙️</i>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">特种设备总数</div>
+                    <div class="card-value card-normal" id="equipment-count">126台</div>
+                </div>
             </div>
-            
-            <!-- 主内容区域 -->
-            <div class="content-container active" id="dashboard">
-                <div class="info-cards">
-                    <div class="info-card equipment">
-                        <div class="card-icon">
-                            <i>⚙️</i>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-title">特种设备总数</div>
-                            <div class="card-value card-normal" id="equipment-count">126台</div>
-                        </div>
-                    </div>
-                    <div class="info-card hazard">
-                        <div class="card-icon">
-                            <i>⚠️</i>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-title">安全隐患 <span class="warning-badge" id="hazard-badge">8项</span></div>
-                            <div class="card-value card-warning" id="hazard-count">8项</div>
-                        </div>
-                    </div>
-                    <div class="info-card expiring">
-                        <div class="card-icon">
-                            <i>📋</i>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-title">待换证人员 <span class="warning-badge" id="expiring-personnel-badge">5人</span></div>
-                            <div class="card-value card-warning" id="expiring-personnel-count">5人</div>
-                        </div>
-                    </div>
-                    <div class="info-card warning">
-                        <div class="card-icon">
-                            <i>🔔</i>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-title">临期预警 <span class="warning-badge" id="warning-badge">12项</span></div>
-                            <div class="card-value card-warning" id="warning-count">12项</div>
-                        </div>
-                    </div>
+            <div class="info-card hazard">
+                <div class="card-icon">
+                    <i>⚠️</i>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">安全隐患 <span class="warning-badge" id="hazard-badge">8项</span></div>
+                    <div class="card-value card-warning" id="hazard-count">8项</div>
+                </div>
+            </div>
+            <div class="info-card expiring">
+                <div class="card-icon">
+                    <i>📋</i>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">待换证人员 <span class="warning-badge" id="expiring-personnel-badge">5人</span></div>
+                    <div class="card-value card-warning" id="expiring-personnel-count">5人</div>
+                </div>
+            </div>
+            <div class="info-card warning">
+                <div class="card-icon">
+                    <i>🔔</i>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">临期预警 <span class="warning-badge" id="warning-badge">12项</span></div>
+                    <div class="card-value card-warning" id="warning-count">12项</div>
+                </div>
+            </div>
+            <div class="info-card inbound">
+                <div class="card-icon">
+                    <i>📦</i>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">今日入库</div>
+                    <div class="card-value card-normal" id="inbound-count">15批</div>
+                </div>
+            </div>
+            <div class="info-card outbound">
+                <div class="card-icon">
+                    <i>🚚</i>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">今日出库</div>
+                    <div class="card-value card-normal" id="outbound-count">12批</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="panel">
+                <h2 class="panel-title">特种设备管理</h2>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="搜索设备编号、名称...">
+                    <button class="btn-small search-equipment">搜索</button>
+                </div>
+                <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>设备编号</th>
+                            <th>设备名称</th>
+                            <th>设备类型</th>
+                            <th>状态</th>
+                            <th>检验日期</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="equipment-table-body">
+                        <!-- 表格内容由JavaScript生成 -->
+                    </tbody>
+                </table>
                 </div>
                 
-                <div class="main-content">
-                    <div class="panel">
-                        <h2 class="panel-title">特种设备管理</h2>
-                        <div class="data-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>设备编号</th>
-                                    <th>设备名称</th>
-                                    <th>设备类型</th>
-                                    <th>状态</th>
-                                    <th>检验日期</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dashboard-equipment-body">
-                                <!-- 表格内容由JavaScript生成 -->
-                            </tbody>
-                        </table>
+                <div id="equipment-edit-form" class="edit-form">
+                    <h3>编辑设备信息</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>设备编号:</label>
+                            <input type="text" id="edit-equipment-id" readonly>
+                        </div>
+                        <div class="form-col">
+                            <label>设备名称:</label>
+                            <input type="text" id="edit-equipment-name">
                         </div>
                     </div>
-                    
-                    <div class="panel">
-                        <h2 class="panel-title">特种作业人员管理</h2>
-                        <div class="data-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>姓名</th>
-                                    <th>工种</th>
-                                    <th>证件号</th>
-                                    <th>有效期</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dashboard-personnel-body">
-                                <!-- 表格内容由JavaScript生成 -->
-                            </tbody>
-                        </table>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>设备类型:</label>
+                            <select id="edit-equipment-type">
+                                <option value="制冷设备">制冷设备</option>
+                                <option value="保温设备">保温设备</option>
+                                <option value="通风设备">通风设备</option>
+                                <option value="叉车">叉车</option>
+                                <option value="小客车">小客车</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label>检验日期:</label>
+                            <input type="date" id="edit-equipment-date">
                         </div>
                     </div>
+                    <input type="file" id="edit-equipment-file" class="file-input">
+                    <button id="save-equipment-btn">保存更改</button>
+                    <button id="cancel-equipment-btn" class="btn-danger">取消</button>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <h3>新增设备</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>设备编号:</label>
+                            <input type="text" id="new-equipment-id" placeholder="请输入设备编号">
+                        </div>
+                        <div class="form-col">
+                            <label>设备名称:</label>
+                            <input type="text" id="new-equipment-name" placeholder="请输入设备名称">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>设备类型:</label>
+                            <select id="new-equipment-type">
+                                <option value="制冷设备">制冷设备</option>
+                                <option value="保温设备">保温设备</option>
+                                <option value="通风设备">通风设备</option>
+                                <option value="叉车">叉车</option>
+                                <option value="小客车">小客车</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label>检验日期:</label>
+                            <input type="date" id="new-equipment-date">
+                        </div>
+                    </div>
+                    <input type="file" id="new-equipment-file" class="file-input">
+                    <button id="add-equipment-btn">添加设备</button>
                 </div>
             </div>
             
-            <!-- 设备管理内容 -->
-            <div class="content-container" id="equipment">
-                <div class="panel">
-                    <h2 class="panel-title">特种设备管理</h2>
-                    <div class="search-bar">
-                        <input type="text" class="search-input" placeholder="搜索设备编号、名称...">
-                        <button class="btn-small search-equipment">搜索</button>
-                    </div>
-                    <div class="data-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>设备编号</th>
-                                <th>设备名称</th>
-                                <th>设备类型</th>
-                                <th>状态</th>
-                                <th>检验日期</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="equipment-table-body">
-                            <!-- 表格内容由JavaScript生成 -->
-                        </tbody>
-                    </table>
-                    </div>
-                    
-                    <div id="equipment-edit-form" class="edit-form">
-                        <h3>编辑设备信息</h3>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>设备编号:</label>
-                                <input type="text" id="edit-equipment-id" readonly>
-                            </div>
-                            <div class="form-col">
-                                <label>设备名称:</label>
-                                <input type="text" id="edit-equipment-name">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>设备类型:</label>
-                                <select id="edit-equipment-type">
-                                    <option value="制冷设备">制冷设备</option>
-                                    <option value="保温设备">保温设备</option>
-                                    <option value="通风设备">通风设备</option>
-                                    <option value="叉车">叉车</option>
-                                    <option value="小客车">小客车</option>
-                                </select>
-                            </div>
-                            <div class="form-col">
-                                <label>检验日期:</label>
-                                <input type="date" id="edit-equipment-date">
-                            </div>
-                        </div>
-                        <input type="file" id="edit-equipment-file" class="file-input">
-                        <button id="save-equipment-btn">保存更改</button>
-                        <button id="cancel-equipment-btn" class="btn-danger">取消</button>
-                    </div>
-                    
-                    <div style="margin-top: 15px;">
-                        <h3>新增设备</h3>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>设备编号:</label>
-                                <input type="text" id="new-equipment-id" placeholder="请输入设备编号">
-                            </div>
-                            <div class="form-col">
-                                <label>设备名称:</label>
-                                <input type="text" id="new-equipment-name" placeholder="请输入设备名称">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>设备类型:</label>
-                                <select id="new-equipment-type">
-                                    <option value="制冷设备">制冷设备</option>
-                                    <option value="保温设备">保温设备</option>
-                                    <option value="通风设备">通风设备</option>
-                                    <option value="叉车">叉车</option>
-                                    <option value="小客车">小客车</option>
-                                </select>
-                            </div>
-                            <div class="form-col">
-                                <label>检验日期:</label>
-                                <input type="date" id="new-equipment-date">
-                            </div>
-                        </div>
-                        <input type="file" id="new-equipment-file" class="file-input">
-                        <button id="add-equipment-btn">添加设备</button>
-                    </div>
+            <div class="panel">
+                <h2 class="panel-title">特种作业人员管理</h2>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="搜索姓名、证件号...">
+                    <button class="btn-small search-personnel">搜索</button>
                 </div>
-            </div>
-            
-            <!-- 人员管理内容 -->
-            <div class="content-container" id="personnel">
-                <div class="panel">
-                    <h2 class="panel-title">特种作业人员管理</h2>
-                    <div class="search-bar">
-                        <input type="text" class="search-input" placeholder="搜索姓名、证件号...">
-                        <button class="btn-small search-personnel">搜索</button>
-                    </div>
-                    <div class="data-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>姓名</th>
-                                <th>工种</th>
-                                <th>证件号</th>
-                                <th>有效期</th>
-                                <th>状态</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="personnel-table-body">
-                            <!-- 表格内容由JavaScript生成 -->
-                        </tbody>
-                    </table>
-                    </div>
-                    
-                    <div id="personnel-edit-form" class="edit-form">
-                        <h3>编辑人员信息</h3>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>姓名:</label>
-                                <input type="text" id="edit-personnel-name">
-                            </div>
-                            <div class="form-col">
-                                <label>工种:</label>
-                                <select id="edit-personnel-job">
-                                    <option value="制冷与空调设备运行操作作业">制冷与空调设备运行操作作业</option>
-                                    <option value="制冷与空调设备安装维修操作作业">制冷与空调设备安装维修操作作业</option>
-                                    <option value="低压电工证">低压电工证</option>
-                                    <option value="高压电工证">高压电工证</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>证件号:</label>
-                                <input type="text" id="edit-personnel-cert">
-                            </div>
-                            <div class="form-col">
-                                <label>有效期:</label>
-                                <input type="date" id="edit-personnel-date">
-                            </div>
-                        </div>
-                        <input type="file" id="edit-personnel-file" class="file-input">
-                        <button id="save-personnel-btn">保存更改</button>
-                        <button id="cancel-personnel-btn" class="btn-danger">取消</button>
-                    </div>
-                    
-                    <div style="margin-top: 15px;">
-                        <h3>新增人员</h3>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>姓名:</label>
-                                <input type="text" id="new-personnel-name" placeholder="请输入姓名">
-                            </div>
-                            <div class="form-col">
-                                <label>工种:</label>
-                                <select id="new-personnel-job">
-                                    <option value="制冷与空调设备运行操作作业">制冷与空调设备运行操作作业</option>
-                                    <option value="制冷与空调设备安装维修操作作业">制冷与空调设备安装维修操作作业</option>
-                                    <option value="低压电工证">低压电工证</option>
-                                    <option value="高压电工证">高压电工证</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>证件号:</label>
-                                <input type="text" id="new-personnel-cert" placeholder="请输入证件号">
-                            </div>
-                            <div class="form-col">
-                                <label>有效期:</label>
-                                <input type="date" id="new-personnel-date">
-                            </div>
-                        </div>
-                        <input type="file" id="new-personnel-file" class="file-input">
-                        <button id="add-personnel-btn">添加人员</button>
-                    </div>
+                <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>姓名</th>
+                            <th>工种</th>
+                            <th>证件号</th>
+                            <th>有效期</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="personnel-table-body">
+                        <!-- 表格内容由JavaScript生成 -->
+                    </tbody>
+                </table>
                 </div>
-            </div>
-            
-            <!-- 合同管理内容 -->
-            <div class="content-container" id="contract">
-                <div class="panel">
-                    <h2 class="panel-title">合同管理</h2>
-                    <div class="search-bar">
-                        <input type="text" class="search-input" placeholder="搜索合同编号、客户名称...">
-                        <button class="btn-small search-contract">搜索</button>
-                    </div>
-                    <div class="data-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>合同编号</th>
-                                <th>客户名称</th>
-                                <th>服务类型</th>
-                                <th>合同金额</th>
-                                <th>签订日期</th>
-                                <th>状态</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="contract-table-body">
-                            <!-- 表格内容由JavaScript生成 -->
-                        </tbody>
-                    </table>
-                    </div>
-                    
-                    <div id="contract-edit-form" class="edit-form">
-                        <h3>编辑合同信息</h3>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>合同编号:</label>
-                                <input type="text" id="edit-contract-id" readonly>
-                            </div>
-                            <div class="form-col">
-                                <label>客户名称:</label>
-                                <input type="text" id="edit-contract-client">
-                            </div>
+                
+                <div id="personnel-edit-form" class="edit-form">
+                    <h3>编辑人员信息</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>姓名:</label>
+                            <input type="text" id="edit-personnel-name">
                         </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>服务类型:</label>
-                                <select id="edit-contract-type">
-                                    <option value="设备维护">设备维护</option>
-                                    <option value="设备租赁">设备租赁</option>
-                                    <option value="技术服务">技术服务</option>
-                                    <option value="购买设备">购买设备</option>
-                                    <option value="购买材料">购买材料</option>
-                                </select>
-                            </div>
-                            <div class="form-col">
-                                <label>合同金额:</label>
-                                <input type="text" id="edit-contract-amount">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>签订日期:</label>
-                                <input type="date" id="edit-contract-date">
-                            </div>
-                        </div>
-                        <input type="file" id="edit-contract-file">
-                        <button id="save-contract-btn">保存更改</button>
-                        <button id="cancel-contract-btn" class="btn-danger">取消</button>
-                    </div>
-                    
-                    <div style="margin-top: 15px;">
-                        <h3>新增合同</h3>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>合同编号:</label>
-                                <input type="text" id="new-contract-id" placeholder="请输入合同编号">
-                            </div>
-                            <div class="form-col">
-                                <label>客户名称:</label>
-                                <input type="text" id="new-contract-client" placeholder="请输入客户名称">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>服务类型:</label>
-                                <select id="new-contract-type">
-                                    <option value="设备维护">设备维护</option>
-                                    <option value="设备租赁">设备租赁</option>
-                                    <option value="技术服务">技术服务</option>
-                                    <option value="购买设备">购买设备</option>
-                                    <option value="购买材料">购买材料</option>
-                                </select>
-                            </div>
-                            <div class="form-col">
-                                <label>合同金额:</label>
-                                <input type="text" id="new-contract-amount" placeholder="请输入合同金额">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>签订日期:</label>
-                                <input type="date" id="new-contract-date">
-                            </div>
-                        </div>
-                        <input type="file" id="new-contract-file">
-                        <button id="add-contract-btn">添加合同</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 安全检查记录内容 -->
-            <div class="content-container" id="inspection">
-                <div class="panel">
-                    <h2 class="panel-title">安全检查记录</h2>
-                    <div class="search-bar">
-                        <input type="text" class="search-input" placeholder="搜索检查编号、检查人员...">
-                        <button class="btn-small search-inspection">搜索</button>
-                    </div>
-                    <div class="data-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>检查编号</th>
-                                <th>检查日期</th>
-                                <th>检查人员</th>
-                                <th>检查区域</th>
-                                <th>隐患数量</th>
-                                <th>状态</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inspection-table-body">
-                            <!-- 表格内容由JavaScript生成 -->
-                        </tbody>
-                    </table>
-                    </div>
-                    
-                    <div id="inspection-edit-form" class="edit-form">
-                        <h3>编辑检查记录</h3>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>检查编号:</label>
-                                <input type="text" id="edit-inspection-id" readonly>
-                            </div>
-                            <div class="form-col">
-                                <label>检查日期:</label>
-                                <input type="date" id="edit-inspection-date">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>检查人员:</label>
-                                <input type="text" id="edit-inspection-staff">
-                            </div>
-                            <div class="form-col">
-                                <label>检查区域:</label>
-                                <select id="edit-inspection-area">
-                                    <option value="高温机房">高温机房</option>
-                                    <option value="低温机房">低温机房</option>
-                                    <option value="高压配电箱">高压配电箱</option>
-                                    <option value="1号冻库">1号冻库</option>
-                                    <option value="2号冻库">2号冻库</option>
-                                    <option value="3号冻库">3号冻库</option>
-                                    <option value="4号冻库">4号冻库</option>
-                                    <option value="1号仓库">1号仓库</option>
-                                    <option value="2号仓库">2号仓库</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>隐患数量:</label>
-                                <input type="number" id="edit-inspection-hazards">
-                            </div>
-                        </div>
-                        <input type="file" id="edit-inspection-file">
-                        <button id="save-inspection-btn">保存更改</button>
-                        <button id="cancel-inspection-btn" class="btn-danger">取消</button>
-                    </div>
-                    
-                    <div style="margin-top: 15px;">
-                        <h3>新增检查记录</h3>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>检查编号:</label>
-                                <input type="text" id="new-inspection-id" placeholder="请输入检查编号">
-                            </div>
-                            <div class="form-col">
-                                <label>检查日期:</label>
-                                <input type="date" id="new-inspection-date">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>检查人员:</label>
-                                <input type="text" id="new-inspection-staff" placeholder="请输入检查人员">
-                            </div>
-                            <div class="form-col">
-                                <label>检查区域:</label>
-                                <select id="new-inspection-area">
-                                    <option value="高温机房">高温机房</option>
-                                    <option value="低温机房">低温机房</option>
-                                    <option value="高压配电箱">高压配电箱</option>
-                                    <option value="1号冻库">1号冻库</option>
-                                    <option value="2号冻库">2号冻库</option>
-                                    <option value="3号冻库">3号冻库</option>
-                                    <option value="4号冻库">4号冻库</option>
-                                    <option value="1号仓库">1号仓库</option>
-                                    <option value="2号仓库">2号仓库</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>隐患数量:</label>
-                                <input type="number" id="new-inspection-hazards" placeholder="请输入隐患数量">
-                            </div>
-                        </div>
-                        <input type="file" id="new-inspection-file">
-                        <button id="add-inspection-btn">添加记录</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 入库管理内容 -->
-            <div class="content-container" id="inbound">
-                <div class="inventory-panel">
-                    <div class="inventory-nav">
-                        <h2 class="nav-title">入库管理</h2>
-                        <div class="nav-item active" data-inventory-target="inbound-list">入库记录</div>
-                        <div class="nav-item" data-inventory-target="inbound-add">新增入库</div>
-                    </div>
-                    
-                    <div class="inventory-content">
-                        <div class="panel">
-                            <h2 class="panel-title">入库管理</h2>
-                            <div class="search-bar">
-                                <input type="text" class="search-input" placeholder="搜索入库单号、货物名称...">
-                                <button class="btn-small search-inbound">搜索</button>
-                            </div>
-                            <div class="data-table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>单号</th>
-                                        <th>入库时间</th>
-                                        <th>货物名称</th>
-                                        <th>数量</th>
-                                        <th>单位</th>
-                                        <th>供应商</th>
-                                        <th>车辆信息</th>
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="inbound-table-body">
-                                    <!-- 表格内容由JavaScript生成 -->
-                                </tbody>
-                            </table>
-                            </div>
+                        <div class="form-col">
+                            <label>工种:</label>
+                            <select id="edit-personnel-job">
+                                <option value="制冷与空调设备运行操作作业">制冷与空调设备运行操作作业</option>
+                                <option value="制冷与空调设备安装维修操作作业">制冷与空调设备安装维修操作作业</option>
+                                <option value="低压电工证">低压电工证</option>
+                                <option value="高压电工证">高压电工证</option>
                             
-                            <div id="inbound-edit-form" class="edit-form">
-                                <h3>编辑入库信息</h3>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>单号:</label>
-                                        <input type="text" id="edit-inbound-id" readonly>
-                                    </div>
-                                    <div class="form-col">
-                                        <label>货物名称:</label>
-                                        <input type="text" id="edit-inbound-name">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>入库时间:</label>
-                                        <input type="datetime-local" id="edit-inbound-time">
-                                    </div>
-                                    <div class="form-col">
-                                        <label>供应商:</label>
-                                        <input type="text" id="edit-inbound-supplier">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>数量:</label>
-                                        <input type="number" id="edit-inbound-quantity">
-                                    </div>
-                                    <div class="form-col">
-                                        <label>单位:</label>
-                                        <select id="edit-inbound-unit">
-                                            <option value="吨">吨</option>
-                                            <option value="公斤">公斤</option>
-                                            <option value="千克">千克</option>
-                                            <option value="箱">箱</option>
-                                            <option value="件">件</option>
-                                            <option value="台">台</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>车辆信息:</label>
-                                        <input type="text" id="edit-inbound-vehicle">
-                                    </div>
-                                </div>
-                                <input type="file" id="edit-inbound-file" class="file-input">
-                                <button id="save-inbound-btn">保存更改</button>
-                                <button id="cancel-inbound-btn" class="btn-danger">取消</button>
-                            </div>
-                            
-                            <div style="margin-top: 15px;" id="inbound-add-form">
-                                <h3>新增入库记录</h3>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>单号:</label>
-                                        <input type="text" id="new-inbound-id" placeholder="请输入入库单号">
-                                    </div>
-                                    <div class="form-col">
-                                        <label>货物名称:</label>
-                                        <input type="text" id="new-inbound-name" placeholder="请输入货物名称">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>入库时间:</label>
-                                        <input type="datetime-local" id="new-inbound-time">
-                                    </div>
-                                    <div class="form-col">
-                                        <label>供应商:</label>
-                                        <input type="text" id="new-inbound-supplier" placeholder="请输入供应商">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>数量:</label>
-                                        <input type="number" id="new-inbound-quantity" placeholder="请输入数量">
-                                    </div>
-                                    <div class="form-col">
-                                        <label>单位:</label>
-                                        <select id="new-inbound-unit">
-                                            <option value="吨">吨</option>
-                                            <option value="公斤">公斤</option>
-                                            <option value="千克">千克</option>
-                                            <option value="箱">箱</option>
-                                            <option value="件">件</option>
-                                            <option value="台">台</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>车辆信息:</label>
-                                        <input type="text" id="new-inbound-vehicle" placeholder="请输入车辆信息">
-                                    </div>
-                                </div>
-                                <input type="file" id="new-inbound-file" class="file-input">
-                                <button id="add-inbound-btn">添加入库记录</button>
-                            </div>
+                            </select>
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>证件号:</label>
+                            <input type="text" id="edit-personnel-cert">
+                        </div>
+                        <div class="form-col">
+                            <label>有效期:</label>
+                            <input type="date" id="edit-personnel-date">
+                        </div>
+                    </div>
+                    <input type="file" id="edit-personnel-file" class="file-input">
+                    <button id="save-personnel-btn">保存更改</button>
+                    <button id="cancel-personnel-btn" class="btn-danger">取消</button>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <h3>新增人员</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>姓名:</label>
+                            <input type="text" id="new-personnel-name" placeholder="请输入姓名">
+                        </div>
+                        <div class="form-col">
+                            <label>工种:</label>
+                            <select id="new-personnel-job">
+                                <option value="制冷与空调设备运行操作作业">制冷与空调设备运行操作作业</option>
+                                <option value="制冷与空调设备安装维修操作作业">制冷与空调设备安装维修操作作业</option>
+                                <option value="低压电工证">低压电工证</option>
+                                <option value="高压电工证">高压电工证</option>
+                             
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>证件号:</label>
+                            <input type="text" id="new-personnel-cert" placeholder="请输入证件号">
+                        </div>
+                        <div class="form-col">
+                            <label>有效期:</label>
+                            <input type="date" id="new-personnel-date">
+                        </div>
+                    </div>
+                    <input type="file" id="new-personnel-file" class="file-input">
+                    <button id="add-personnel-btn">添加人员</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="panel">
+                <h2 class="panel-title">库存管理</h2>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="搜索产品编号、名称...">
+                    <button class="btn-small search-stock">搜索</button>
+                </div>
+                <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>产品编号</th>
+                            <th>产品名称</th>
+                            <th>规格型号</th>
+                            <th>库存数量</th>
+                            <th>单位</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-table-body">
+                        <!-- 表格内容由JavaScript生成 -->
+                    </tbody>
+                </table>
+                </div>
+                
+                <div id="stock-edit-form" class="edit-form">
+                    <h3>编辑库存信息</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>产品编号:</label>
+                            <input type="text" id="edit-stock-id" readonly>
+                        </div>
+                        <div class="form-col">
+                            <label>产品名称:</label>
+                            <input type="text" id="edit-stock-name">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>规格型号:</label>
+                            <input type="text" id="edit-stock-model">
+                        </div>
+                        <div class="form-col">
+                            <label>库存数量:</label>
+                            <input type="number" id="edit-stock-quantity">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>单位:</label>
+                            <select id="edit-stock-unit">
+                                <option value="吨">吨</option>
+                                <option value="公斤">公斤</option>
+                                <option value="箱">箱</option>
+                                <option value="件">件</option>
+                                <option value="包">包</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label>状态:</label>
+                            <select id="edit-stock-status">
+                                <option value="正常">正常</option>
+                                <option value="预警">预警</option>
+                                <option value="缺货">缺货</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="file" id="edit-stock-file" class="file-input">
+                    <button id="save-stock-btn">保存更改</button>
+                    <button id="cancel-stock-btn" class="btn-danger">取消</button>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <h3>新增库存</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>产品编号:</label>
+                            <input type="text" id="new-stock-id" placeholder="请输入产品编号">
+                        </div>
+                        <div class="form-col">
+                            <label>产品名称:</label>
+                            <input type="text" id="new-stock-name" placeholder="请输入产品名称">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>规格型号:</label>
+                            <input type="text" id="new-stock-model" placeholder="请输入规格型号">
+                        </div>
+                        <div class="form-col">
+                            <label>库存数量:</label>
+                            <input type="number" id="new-stock-quantity" placeholder="请输入库存数量">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>单位:</label>
+                            <select id="new-stock-unit">
+                                <option value="吨">吨</option>
+                                <option value="公斤">公斤</option>
+                                <option value="箱">箱</option>
+                                <option value="件">件</option>
+                                <option value="包">包</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label>状态:</label>
+                            <select id="new-stock-status">
+                                <option value="正常">正常</option>
+                                <option value="预警">预警</option>
+                                <option value="缺货">缺货</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="file" id="new-stock-file" class="file-input">
+                    <button id="add-stock-btn">添加库存</button>
                 </div>
             </div>
             
-            <!-- 出库管理内容 -->
-            <div class="content-container" id="outbound">
-                <div class="inventory-panel">
-                    <div class="inventory-nav">
-                        <h2 class="nav-title">出库管理</h2>
-                        <div class="nav-item active" data-inventory-target="outbound-list">出库记录</div>
-                        <div class="nav-item" data-inventory-target="outbound-add">新增出库</div>
-                    </div>
-                    
-                    <div class="inventory-content">
-                        <div class="panel">
-                            <h2 class="panel-title">出库管理</h2>
-                            <div class="search-bar">
-                                <input type="text" class="search-input" placeholder="搜索出库单号、货物名称...">
-                                <button class="btn-small search-outbound">搜索</button>
-                            </div>
-                            <div class="data-table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>单号</th>
-                                        <th>出库时间</th>
-                                        <th>货物名称</th>
-                                        <th>数量</th>
-                                        <th>单位</th>
-                                        <th>出库单位</th>
-                                        <th>车辆信息</th>
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="outbound-table-body">
-                                    <!-- 表格内容由JavaScript生成 -->
-                                </tbody>
-                            </table>
-                            </div>
-                            
-                            <div id="outbound-edit-form" class="edit-form">
-                                <h3>编辑出库信息</h3>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>单号:</label>
-                                        <input type="text" id="edit-outbound-id" readonly>
-                                    </div>
-                                    <div class="form-col">
-                                        <label>货物名称:</label>
-                                        <input type="text" id="edit-outbound-name">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>出库时间:</label>
-                                        <input type="datetime-local" id="edit-outbound-time">
-                                    </div>
-                                    <div class="form-col">
-                                        <label>出库单位:</label>
-                                        <input type="text" id="edit-outbound-recipient">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>数量:</label>
-                                        <input type="number" id="edit-outbound-quantity">
-                                    </div>
-                                    <div class="form-col">
-                                        <label>单位:</label>
-                                        <select id="edit-outbound-unit">
-                                            <option value="吨">吨</option>
-                                            <option value="公斤">公斤</option>
-                                            <option value="千克">千克</option>
-                                            <option value="箱">箱</option>
-                                            <option value="件">件</option>
-                                            <option value="台">台</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>车辆信息:</label>
-                                        <input type="text" id="edit-outbound-vehicle">
-                                    </div>
-                                </div>
-                                <input type="file" id="edit-outbound-file" class="file-input">
-                                <button id="save-outbound-btn">保存更改</button>
-                                <button id="cancel-outbound-btn" class="btn-danger">取消</button>
-                            </div>
-                            
-                            <div style="margin-top: 15px;" id="outbound-add-form">
-                                <h3>新增出库记录</h3>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>单号:</label>
-                                        <input type="text" id="new-outbound-id" placeholder="请输入出库单号">
-                                    </div>
-                                    <div class="form-col">
-                                        <label>货物名称:</label>
-                                        <input type="text" id="new-outbound-name" placeholder="请输入货物名称">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>出库时间:</label>
-                                        <input type="datetime-local" id="new-outbound-time">
-                                    </div>
-                                    <div class="form-col">
-                                        <label>出库单位:</label>
-                                        <input type="text" id="new-outbound-recipient" placeholder="请输入出库单位">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>数量:</label>
-                                        <input type="number" id="new-outbound-quantity" placeholder="请输入数量">
-                                    </div>
-                                    <div class="form-col">
-                                        <label>单位:</label>
-                                        <select id="new-outbound-unit">
-                                            <option value="吨">吨</option>
-                                            <option value="公斤">公斤</option>
-                                            <option value="千克">千克</option>
-                                            <option value="箱">箱</option>
-                                            <option value="件">件</option>
-                                            <option value="台">台</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-col">
-                                        <label>车辆信息:</label>
-                                        <input type="text" id="new-outbound-vehicle" placeholder="请输入车辆信息">
-                                    </div>
-                                </div>
-                                <input type="file" id="new-outbound-file" class="file-input">
-                                <button id="add-outbound-btn">添加出库记录</button>
-                            </div>
+            <div class="panel">
+                <h2 class="panel-title">出入库管理</h2>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="搜索单据编号、客户名称...">
+                    <button class="btn-small search-inventory">搜索</button>
+                </div>
+                <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                    <button class="btn-success inbound-btn" id="show-inbound-form">新增入库</button>
+                    <button class="btn-warning outbound-btn" id="show-outbound-form">新增出库</button>
+                </div>
+                
+                <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>单据编号</th>
+                            <th>操作类型</th>
+                            <th>产品名称</th>
+                            <th>数量</th>
+                            <th>操作时间</th>
+                            <th>操作员</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-table-body">
+                        <!-- 表格内容由JavaScript生成 -->
+                    </tbody>
+                </table>
+                </div>
+                
+                <div id="inbound-form" class="edit-form">
+                    <h3>新增入库单</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>单据编号:</label>
+                            <input type="text" id="new-inbound-id" placeholder="系统自动生成">
+                        </div>
+                        <div class="form-col">
+                            <label>产品名称:</label>
+                            <select id="new-inbound-product">
+                                <!-- 选项由JavaScript生成 -->
+                            </select>
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>数量:</label>
+                            <input type="number" id="new-inbound-quantity" placeholder="请输入入库数量">
+                        </div>
+                        <div class="form-col">
+                            <label>供应商:</label>
+                            <input type="text" id="new-inbound-supplier" placeholder="请输入供应商名称">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>操作员:</label>
+                            <input type="text" id="new-inbound-operator" placeholder="请输入操作员姓名">
+                        </div>
+                        <div class="form-col">
+                            <label>备注:</label>
+                            <input type="text" id="new-inbound-notes" placeholder="请输入备注信息">
+                        </div>
+                    </div>
+                    <input type="file" id="new-inbound-file" class="file-input">
+                    <button id="save-inbound-btn">确认入库</button>
+                    <button id="cancel-inbound-btn" class="btn-danger">取消</button>
+                </div>
+                
+                <div id="outbound-form" class="edit-form">
+                    <h3>新增出库单</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>单据编号:</label>
+                            <input type="text" id="new-outbound-id" placeholder="系统自动生成">
+                        </div>
+                        <div class="form-col">
+                            <label>产品名称:</label>
+                            <select id="new-outbound-product">
+                                <!-- 选项由JavaScript生成 -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>数量:</label>
+                            <input type="number" id="new-outbound-quantity" placeholder="请输入出库数量">
+                        </div>
+                        <div class="form-col">
+                            <label>客户:</label>
+                            <input type="text" id="new-outbound-customer" placeholder="请输入客户名称">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>操作员:</label>
+                            <input type="text" id="new-outbound-operator" placeholder="请输入操作员姓名">
+                        </div>
+                        <div class="form-col">
+                            <label>备注:</label>
+                            <input type="text" id="new-outbound-notes" placeholder="请输入备注信息">
+                        </div>
+                    </div>
+                    <input type="file" id="new-outbound-file" class="file-input">
+                    <button id="save-outbound-btn">确认出库</button>
+                    <button id="cancel-outbound-btn" class="btn-danger">取消</button>
                 </div>
             </div>
         </div>
@@ -1249,16 +908,16 @@
         const PERSONNEL_DATA_KEY = 'coldChainPersonnelData';
         const CONTRACT_DATA_KEY = 'coldChainContractData';
         const INSPECTION_DATA_KEY = 'coldChainInspectionData';
-        const INBOUND_DATA_KEY = 'coldChainInboundData';
-        const OUTBOUND_DATA_KEY = 'coldChainOutboundData';
+        const STOCK_DATA_KEY = 'coldChainStockData';
+        const INVENTORY_DATA_KEY = 'coldChainInventoryData';
         
         // 全局数据存储
         let equipmentData = [];
         let personnelData = [];
         let contractData = [];
         let inspectionData = [];
-        let inboundData = [];
-        let outboundData = [];
+        let stockData = [];
+        let inventoryData = [];
 
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
@@ -1276,9 +935,6 @@
             
             // 更新存储状态显示
             updateStorageInfo();
-            
-            // 绑定导航事件
-            bindNavigationEvents();
         });
 
         // 从localStorage加载数据
@@ -1336,30 +992,30 @@
                         { id: 4, code: 'JC-2023-004', date: '2023-12-15', staff: '安全部-刘工', area: 'D区设备间', hazards: 0, status: '合格' }
                     ];
                 }
-
-                // 加载入库数据
-                const storedInbound = localStorage.getItem(INBOUND_DATA_KEY);
-                if (storedInbound) {
-                    inboundData = JSON.parse(storedInbound);
+                
+                // 加载库存数据
+                const storedStock = localStorage.getItem(STOCK_DATA_KEY);
+                if (storedStock) {
+                    stockData = JSON.parse(storedStock);
                 } else {
-                    inboundData = [
-                        { id: 1, code: 'RK-2023-001', time: '2023-12-01T09:30', name: '冷冻肉类', quantity: 10, unit: '吨', supplier: '成都肉类加工厂', vehicle: '川A12345' },
-                        { id: 2, code: 'RK-2023-002', time: '2023-12-02T14:20', name: '海鲜产品', quantity: 5, unit: '吨', supplier: '青岛海产公司', vehicle: '川B67890' },
-                        { id: 3, code: 'RK-2023-003', time: '2023-12-03T11:15', name: '乳制品', quantity: 200, unit: '箱', supplier: '蒙牛乳业', vehicle: '川C11111' },
-                        { id: 4, code: 'RK-2023-004', time: '2023-12-04T16:45', name: '速冻蔬菜', quantity: 8, unit: '吨', supplier: '山东蔬菜基地', vehicle: '川D22222' }
+                    stockData = [
+                        { id: 1, code: 'CP-001', name: '冷冻海鲜', model: 'A-2023', quantity: 150, unit: '吨', status: '正常' },
+                        { id: 2, code: 'CP-002', name: '速冻蔬菜', model: 'B-2023', quantity: 85, unit: '吨', status: '预警' },
+                        { id: 3, code: 'CP-003', name: '进口水果', model: 'C-2023', quantity: 45, unit: '吨', status: '正常' },
+                        { id: 4, code: 'CP-004', name: '乳制品', model: 'D-2023', quantity: 200, unit: '吨', status: '正常' }
                     ];
                 }
-
-                // 加载出库数据
-                const storedOutbound = localStorage.getItem(OUTBOUND_DATA_KEY);
-                if (storedOutbound) {
-                    outboundData = JSON.parse(storedOutbound);
+                
+                // 加载出入库数据
+                const storedInventory = localStorage.getItem(INVENTORY_DATA_KEY);
+                if (storedInventory) {
+                    inventoryData = JSON.parse(storedInventory);
                 } else {
-                    outboundData = [
-                        { id: 1, code: 'CK-2023-001', time: '2023-12-01T10:30', name: '冷冻肉类', quantity: 3, unit: '吨', recipient: '成都超市连锁', vehicle: '川E33333' },
-                        { id: 2, code: 'CK-2023-002', time: '2023-12-02T15:20', name: '海鲜产品', quantity: 2, unit: '吨', recipient: '重庆餐饮集团', vehicle: '川F44444' },
-                        { id: 3, code: 'CK-2023-003', time: '2023-12-03T12:15', name: '乳制品', quantity: 50, unit: '箱', recipient: '西安便利店', vehicle: '川G55555' },
-                        { id: 4, code: 'CK-2023-004', time: '2023-12-04T17:45', name: '速冻蔬菜', quantity: 3, unit: '吨', recipient: '昆明批发市场', vehicle: '川H66666' }
+                    inventoryData = [
+                        { id: 1, code: 'RK-2023-001', type: '入库', productId: 1, productName: '冷冻海鲜', quantity: 50, operator: '王工', time: '2023-12-01', notes: '新批次入库', status: '已完成' },
+                        { id: 2, code: 'CK-2023-001', type: '出库', productId: 2, productName: '速冻蔬菜', quantity: 20, operator: '李工', time: '2023-12-02', notes: '配送客户A', status: '已完成' },
+                        { id: 3, code: 'RK-2023-002', type: '入库', productId: 3, productName: '进口水果', quantity: 30, operator: '张工', time: '2023-12-03', notes: '新批次入库', status: '已完成' },
+                        { id: 4, code: 'CK-2023-002', type: '出库', productId: 1, productName: '冷冻海鲜', quantity: 15, operator: '刘工', time: '2023-12-04', notes: '配送客户B', status: '已完成' }
                     ];
                 }
                 
@@ -1377,8 +1033,8 @@
                 localStorage.setItem(PERSONNEL_DATA_KEY, JSON.stringify(personnelData));
                 localStorage.setItem(CONTRACT_DATA_KEY, JSON.stringify(contractData));
                 localStorage.setItem(INSPECTION_DATA_KEY, JSON.stringify(inspectionData));
-                localStorage.setItem(INBOUND_DATA_KEY, JSON.stringify(inboundData));
-                localStorage.setItem(OUTBOUND_DATA_KEY, JSON.stringify(outboundData));
+                localStorage.setItem(STOCK_DATA_KEY, JSON.stringify(stockData));
+                localStorage.setItem(INVENTORY_DATA_KEY, JSON.stringify(inventoryData));
                 
                 document.getElementById('storage-status').textContent = '数据已保存';
             } catch (error) {
@@ -1395,8 +1051,8 @@
                 personnel: personnelData,
                 contract: contractData,
                 inspection: inspectionData,
-                inbound: inboundData,
-                outbound: outboundData
+                stock: stockData,
+                inventory: inventoryData
             }).length;
             
             storageInfo.title = `总数据大小: ${totalSize} 字节`;
@@ -1433,53 +1089,26 @@
             const warningCount = expiringEquipment + expiringPersonnelCount + expiringContracts;
             document.getElementById('warning-count').textContent = warningCount + '项';
             document.getElementById('warning-badge').textContent = warningCount + '项';
+            
+            // 今日入库/出库统计
+            const today = new Date().toISOString().split('T')[0];
+            const todayInbound = inventoryData.filter(item => item.type === '入库' && item.time.startsWith(today)).length;
+            const todayOutbound = inventoryData.filter(item => item.type === '出库' && item.time.startsWith(today)).length;
+            
+            document.getElementById('inbound-count').textContent = todayInbound + '批';
+            document.getElementById('outbound-count').textContent = todayOutbound + '批';
         }
 
         // 渲染表格函数
         function renderTables() {
-            renderDashboardTables();
             renderEquipmentTable();
             renderPersonnelTable();
             renderContractTable();
             renderInspectionTable();
-            renderInboundTable();
-            renderOutboundTable();
+            renderStockTable();
+            renderInventoryTable();
             updateInfoCards();
-        }
-
-        // 渲染首页表格
-        function renderDashboardTables() {
-            // 设备表格
-            const dashboardEquipmentBody = document.getElementById('dashboard-equipment-body');
-            dashboardEquipmentBody.innerHTML = '';
-            equipmentData.slice(0, 5).forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.code}</td>
-                    <td>${item.name}</td>
-                    <td>${item.type}</td>
-                    <td><span class="${item.status === '正常' ? 'status-active' : item.status === '即将到期' ? 'status-expiring' : 'status-overdue'}">${item.status}</span></td>
-                    <td>${item.date}</td>
-                    <td><button class="btn-edit btn-small">查看</button></td>
-                `;
-                dashboardEquipmentBody.appendChild(row);
-            });
-            
-            // 人员表格
-            const dashboardPersonnelBody = document.getElementById('dashboard-personnel-body');
-            dashboardPersonnelBody.innerHTML = '';
-            personnelData.slice(0, 5).forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.name}</td>
-                    <td>${item.job}</td>
-                    <td>${item.cert}</td>
-                    <td>${item.date}</td>
-                    <td><span class="${item.status === '正常' ? 'status-active' : item.status === '即将到期' ? 'status-expiring' : 'status-overdue'}">${item.status}</span></td>
-                    <td><button class="btn-edit btn-small">查看</button></td>
-                `;
-                dashboardPersonnelBody.appendChild(row);
-            });
+            populateProductSelects();
         }
 
         // 渲染设备表格
@@ -1648,26 +1277,30 @@
             });
         }
 
-        // 渲染入库表格
-        function renderInboundTable(data = inboundData) {
-            const tbody = document.getElementById('inbound-table-body');
+        // 渲染库存表格
+        function renderStockTable(data = stockData) {
+            const tbody = document.getElementById('stock-table-body');
             tbody.innerHTML = '';
             
             data.forEach(item => {
                 const row = document.createElement('tr');
                 row.setAttribute('data-id', item.id);
                 
+                let statusClass = '';
+                if (item.status === '正常') statusClass = 'status-active';
+                else if (item.status === '预警') statusClass = 'status-expiring';
+                else if (item.status === '缺货') statusClass = 'status-overdue';
+                
                 row.innerHTML = `
                     <td>${item.code}</td>
-                    <td>${formatDateTime(item.time)}</td>
                     <td>${item.name}</td>
+                    <td>${item.model}</td>
                     <td>${item.quantity}</td>
                     <td>${item.unit}</td>
-                    <td>${item.supplier}</td>
-                    <td>${item.vehicle}</td>
+                    <td><span class="${statusClass}">${item.status}</span></td>
                     <td class="action-buttons">
-                        <button class="btn-edit btn-small edit-inbound" data-id="${item.id}">编辑</button>
-                        <button class="btn-danger btn-small delete-inbound" data-id="${item.id}">删除</button>
+                        <button class="btn-edit btn-small edit-stock" data-id="${item.id}">编辑</button>
+                        <button class="btn-danger btn-small delete-stock" data-id="${item.id}">删除</button>
                     </td>
                 `;
                 
@@ -1675,129 +1308,69 @@
             });
             
             // 重新绑定事件监听器
-            document.querySelectorAll('.edit-inbound').forEach(button => {
-                button.removeEventListener('click', editInboundHandler);
-                button.addEventListener('click', editInboundHandler);
+            document.querySelectorAll('.edit-stock').forEach(button => {
+                button.removeEventListener('click', editStockHandler);
+                button.addEventListener('click', editStockHandler);
             });
             
-            document.querySelectorAll('.delete-inbound').forEach(button => {
-                button.removeEventListener('click', deleteInboundHandler);
-                button.addEventListener('click', deleteInboundHandler);
+            document.querySelectorAll('.delete-stock').forEach(button => {
+                button.removeEventListener('click', deleteStockHandler);
+                button.addEventListener('click', deleteStockHandler);
             });
         }
 
-        // 渲染出库表格
-        function renderOutboundTable(data = outboundData) {
-            const tbody = document.getElementById('outbound-table-body');
+        // 渲染出入库表格
+        function renderInventoryTable(data = inventoryData) {
+            const tbody = document.getElementById('inventory-table-body');
             tbody.innerHTML = '';
             
             data.forEach(item => {
                 const row = document.createElement('tr');
                 row.setAttribute('data-id', item.id);
                 
+                let statusClass = '';
+                let typeClass = '';
+                if (item.type === '入库') {
+                    typeClass = 'status-inbound';
+                } else if (item.type === '出库') {
+                    typeClass = 'status-outbound';
+                }
+                
+                if (item.status === '已完成') statusClass = 'status-active';
+                else if (item.status === '处理中') statusClass = 'status-expiring';
+                
                 row.innerHTML = `
                     <td>${item.code}</td>
-                    <td>${formatDateTime(item.time)}</td>
-                    <td>${item.name}</td>
+                    <td><span class="${typeClass}">${item.type}</span></td>
+                    <td>${item.productName}</td>
                     <td>${item.quantity}</td>
-                    <td>${item.unit}</td>
-                    <td>${item.recipient}</td>
-                    <td>${item.vehicle}</td>
-                    <td class="action-buttons">
-                        <button class="btn-edit btn-small edit-outbound" data-id="${item.id}">编辑</button>
-                        <button class="btn-danger btn-small delete-outbound" data-id="${item.id}">删除</button>
-                    </td>
+                    <td>${item.time}</td>
+                    <td>${item.operator}</td>
+                    <td><span class="${statusClass}">${item.status}</span></td>
                 `;
                 
                 tbody.appendChild(row);
             });
-            
-            // 重新绑定事件监听器
-            document.querySelectorAll('.edit-outbound').forEach(button => {
-                button.removeEventListener('click', editOutboundHandler);
-                button.addEventListener('click', editOutboundHandler);
-            });
-            
-            document.querySelectorAll('.delete-outbound').forEach(button => {
-                button.removeEventListener('click', deleteOutboundHandler);
-                button.addEventListener('click', deleteOutboundHandler);
-            });
         }
 
-        // 格式化日期时间
-        function formatDateTime(dateTimeStr) {
-            if (!dateTimeStr) return '';
-            const date = new Date(dateTimeStr);
-            return date.toLocaleString('zh-CN');
-        }
-
-        // 导航事件绑定
-        function bindNavigationEvents() {
-            // 主导航
-            document.querySelectorAll('.nav-item[data-target]').forEach(navItem => {
-                navItem.addEventListener('click', function() {
-                    const target = this.getAttribute('data-target');
-                    
-                    // 移除所有活动类
-                    document.querySelectorAll('.nav-item[data-target]').forEach(item => {
-                        item.classList.remove('active');
-                    });
-                    
-                    // 添加当前活动类
-                    this.classList.add('active');
-                    
-                    // 隐藏所有内容容器
-                    document.querySelectorAll('.content-container').forEach(container => {
-                        container.classList.remove('active');
-                    });
-                    
-                    // 显示目标内容
-                    document.getElementById(target).classList.add('active');
-                });
-            });
+        // 填充产品选择框
+        function populateProductSelects() {
+            const inboundSelect = document.getElementById('new-inbound-product');
+            const outboundSelect = document.getElementById('new-outbound-product');
             
-            // 入库管理子导航
-            document.querySelectorAll('[data-inventory-target="inbound-list"], [data-inventory-target="inbound-add"]').forEach(item => {
-                item.addEventListener('click', function() {
-                    // 移除所有活动类
-                    document.querySelectorAll('[data-inventory-target]').forEach(i => {
-                        i.classList.remove('active');
-                    });
-                    
-                    // 添加当前活动类
-                    this.classList.add('active');
-                    
-                    // 控制表单显示
-                    if (this.getAttribute('data-inventory-target') === 'inbound-add') {
-                        document.getElementById('inbound-table-body').closest('.panel').style.display = 'none';
-                        document.getElementById('inbound-add-form').style.display = 'block';
-                    } else {
-                        document.getElementById('inbound-table-body').closest('.panel').style.display = 'block';
-                        document.getElementById('inbound-add-form').style.display = 'none';
-                    }
-                });
-            });
+            inboundSelect.innerHTML = '';
+            outboundSelect.innerHTML = '';
             
-            // 出库管理子导航
-            document.querySelectorAll('[data-inventory-target="outbound-list"], [data-inventory-target="outbound-add"]').forEach(item => {
-                item.addEventListener('click', function() {
-                    // 移除所有活动类
-                    document.querySelectorAll('[data-inventory-target]').forEach(i => {
-                        i.classList.remove('active');
-                    });
-                    
-                    // 添加当前活动类
-                    this.classList.add('active');
-                    
-                    // 控制表单显示
-                    if (this.getAttribute('data-inventory-target') === 'outbound-add') {
-                        document.getElementById('outbound-table-body').closest('.panel').style.display = 'none';
-                        document.getElementById('outbound-add-form').style.display = 'block';
-                    } else {
-                        document.getElementById('outbound-table-body').closest('.panel').style.display = 'block';
-                        document.getElementById('outbound-add-form').style.display = 'none';
-                    }
-                });
+            stockData.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                inboundSelect.appendChild(option);
+                
+                const option2 = document.createElement('option');
+                option2.value = item.id;
+                option2.textContent = item.name;
+                outboundSelect.appendChild(option2);
             });
         }
 
@@ -1831,23 +1404,30 @@
             // 添加检查记录
             document.getElementById('add-inspection-btn').addEventListener('click', addNewInspection);
             
-            // 入库管理事件
-            document.getElementById('save-inbound-btn').addEventListener('click', saveInboundEdit);
-            document.getElementById('cancel-inbound-btn').addEventListener('click', closeInboundEditForm);
-            document.getElementById('add-inbound-btn').addEventListener('click', addNewInbound);
+            // 保存/取消库存编辑
+            document.getElementById('save-stock-btn').addEventListener('click', saveStockEdit);
+            document.getElementById('cancel-stock-btn').addEventListener('click', closeStockEditForm);
             
-            // 出库管理事件
-            document.getElementById('save-outbound-btn').addEventListener('click', saveOutboundEdit);
-            document.getElementById('cancel-outbound-btn').addEventListener('click', closeOutboundEditForm);
-            document.getElementById('add-outbound-btn').addEventListener('click', addNewOutbound);
+            // 添加库存
+            document.getElementById('add-stock-btn').addEventListener('click', addNewStock);
+            
+            // 出入库管理
+            document.getElementById('show-inbound-form').addEventListener('click', showInboundForm);
+            document.getElementById('show-outbound-form').addEventListener('click', showOutboundForm);
+            
+            // 保存/取消出入库
+            document.getElementById('save-inbound-btn').addEventListener('click', saveInbound);
+            document.getElementById('cancel-inbound-btn').addEventListener('click', cancelInbound);
+            document.getElementById('save-outbound-btn').addEventListener('click', saveOutbound);
+            document.getElementById('cancel-outbound-btn').addEventListener('click', cancelOutbound);
             
             // 搜索功能
             document.querySelector('.search-equipment').addEventListener('click', searchEquipment);
             document.querySelector('.search-personnel').addEventListener('click', searchPersonnel);
             document.querySelector('.search-contract').addEventListener('click', searchContract);
             document.querySelector('.search-inspection').addEventListener('click', searchInspection);
-            document.querySelector('.search-inbound').addEventListener('click', searchInbound);
-            document.querySelector('.search-outbound').addEventListener('click', searchOutbound);
+            document.querySelector('.search-stock').addEventListener('click', searchStock);
+            document.querySelector('.search-inventory').addEventListener('click', searchInventory);
             
             // 回车键搜索
             document.querySelectorAll('.search-input').forEach(input => {
@@ -1862,10 +1442,10 @@
                             searchContract();
                         } else if (tableContainer.querySelector('.search-inspection')) {
                             searchInspection();
-                        } else if (tableContainer.querySelector('.search-inbound')) {
-                            searchInbound();
-                        } else if (tableContainer.querySelector('.search-outbound')) {
-                            searchOutbound();
+                        } else if (tableContainer.querySelector('.search-stock')) {
+                            searchStock();
+                        } else if (tableContainer.querySelector('.search-inventory')) {
+                            searchInventory();
                         }
                     }
                 });
@@ -2415,252 +1995,300 @@
             }
         }
 
-        // 入库管理
-        function openInboundEditForm(id) {
-            const inbound = inboundData.find(item => item.id === id);
-            if (!inbound) return;
+        // 库存管理
+        function openStockEditForm(id) {
+            const stock = stockData.find(item => item.id === id);
+            if (!stock) return;
             
-            document.getElementById('edit-inbound-id').value = inbound.code;
-            document.getElementById('edit-inbound-name').value = inbound.name;
-            document.getElementById('edit-inbound-time').value = inbound.time.replace(' ', 'T');
-            document.getElementById('edit-inbound-supplier').value = inbound.supplier;
-            document.getElementById('edit-inbound-quantity').value = inbound.quantity;
-            document.getElementById('edit-inbound-unit').value = inbound.unit;
-            document.getElementById('edit-inbound-vehicle').value = inbound.vehicle;
+            document.getElementById('edit-stock-id').value = stock.code;
+            document.getElementById('edit-stock-name').value = stock.name;
+            document.getElementById('edit-stock-model').value = stock.model;
+            document.getElementById('edit-stock-quantity').value = stock.quantity;
+            document.getElementById('edit-stock-unit').value = stock.unit;
+            document.getElementById('edit-stock-status').value = stock.status;
             
             // 存储当前编辑的ID
-            document.getElementById('save-inbound-btn').setAttribute('data-id', id);
+            document.getElementById('save-stock-btn').setAttribute('data-id', id);
             
-            document.getElementById('inbound-edit-form').classList.add('active');
+            document.getElementById('stock-edit-form').classList.add('active');
         }
 
-        function saveInboundEdit() {
-            const id = parseInt(document.getElementById('save-inbound-btn').getAttribute('data-id'));
-            const code = document.getElementById('edit-inbound-id').value;
-            const name = document.getElementById('edit-inbound-name').value;
-            const time = document.getElementById('edit-inbound-time').value;
-            const supplier = document.getElementById('edit-inbound-supplier').value;
-            const quantity = parseInt(document.getElementById('edit-inbound-quantity').value);
-            const unit = document.getElementById('edit-inbound-unit').value;
-            const vehicle = document.getElementById('edit-inbound-vehicle').value;
+        function saveStockEdit() {
+            const id = parseInt(document.getElementById('save-stock-btn').getAttribute('data-id'));
+            const name = document.getElementById('edit-stock-name').value;
+            const model = document.getElementById('edit-stock-model').value;
+            const quantity = parseInt(document.getElementById('edit-stock-quantity').value);
+            const unit = document.getElementById('edit-stock-unit').value;
+            const status = document.getElementById('edit-stock-status').value;
             
-            if (!code || !name || !time || !supplier || isNaN(quantity) || !unit || !vehicle) {
+            if (!name || !model || !quantity || isNaN(quantity)) {
                 alert('请填写所有必填字段！');
                 return;
             }
             
             // 更新数据
-            const index = inboundData.findIndex(item => item.id === id);
+            const index = stockData.findIndex(item => item.id === id);
             if (index !== -1) {
-                inboundData[index].code = code;
-                inboundData[index].name = name;
-                inboundData[index].time = time.replace('T', ' ');
-                inboundData[index].supplier = supplier;
-                inboundData[index].quantity = quantity;
-                inboundData[index].unit = unit;
-                inboundData[index].vehicle = vehicle;
+                stockData[index].name = name;
+                stockData[index].model = model;
+                stockData[index].quantity = quantity;
+                stockData[index].unit = unit;
+                stockData[index].status = status;
             }
             
             // 保存到localStorage
             saveDataToStorage();
             
             // 重新渲染表格
-            renderInboundTable();
+            renderStockTable();
+            updateInfoCards(); // 更新信息卡片
             
             // 关闭编辑表单
-            closeInboundEditForm();
+            closeStockEditForm();
             
-            alert('入库信息已保存！');
+            alert('库存信息已保存！');
         }
 
-        function closeInboundEditForm() {
-            document.getElementById('inbound-edit-form').classList.remove('active');
+        function closeStockEditForm() {
+            document.getElementById('stock-edit-form').classList.remove('active');
         }
 
-        function addNewInbound() {
-            const id = Math.max(...inboundData.map(item => item.id), 0) + 1;
-            const code = document.getElementById('new-inbound-id').value;
-            const name = document.getElementById('new-inbound-name').value;
-            const time = document.getElementById('new-inbound-time').value;
-            const supplier = document.getElementById('new-inbound-supplier').value;
-            const quantity = parseInt(document.getElementById('new-inbound-quantity').value);
-            const unit = document.getElementById('new-inbound-unit').value;
-            const vehicle = document.getElementById('new-inbound-vehicle').value;
+        function addNewStock() {
+            const id = Math.max(...stockData.map(item => item.id), 0) + 1;
+            const code = document.getElementById('new-stock-id').value;
+            const name = document.getElementById('new-stock-name').value;
+            const model = document.getElementById('new-stock-model').value;
+            const quantity = parseInt(document.getElementById('new-stock-quantity').value);
+            const unit = document.getElementById('new-stock-unit').value;
+            const status = document.getElementById('new-stock-status').value;
             
-            if (!code || !name || !time || !supplier || isNaN(quantity) || !unit || !vehicle) {
+            if (!code || !name || !model || !quantity || isNaN(quantity)) {
                 alert('请填写所有必填字段！');
                 return;
             }
             
             // 检查编号是否已存在
-            if (inboundData.some(item => item.code === code)) {
-                alert('入库单号已存在！');
+            if (stockData.some(item => item.code === code)) {
+                alert('产品编号已存在！');
                 return;
             }
+            
+            // 添加新库存
+            stockData.push({
+                id: id,
+                code: code,
+                name: name,
+                model: model,
+                quantity: quantity,
+                unit: unit,
+                status: status
+            });
+            
+            // 保存到localStorage
+            saveDataToStorage();
+            
+            // 重新渲染表格
+            renderStockTable();
+            updateInfoCards(); // 更新信息卡片
+            populateProductSelects(); // 更新产品选择框
+            
+            // 清空表单
+            document.getElementById('new-stock-id').value = '';
+            document.getElementById('new-stock-name').value = '';
+            document.getElementById('new-stock-model').value = '';
+            document.getElementById('new-stock-quantity').value = '';
+            
+            alert('新库存已添加！');
+        }
+
+        function deleteStock(id) {
+            if (confirm('确定要删除此库存记录吗？')) {
+                stockData = stockData.filter(item => item.id !== id);
+                
+                // 保存到localStorage
+                saveDataToStorage();
+                
+                renderStockTable();
+                updateInfoCards(); // 更新信息卡片
+                populateProductSelects(); // 更新产品选择框
+                alert('库存记录已删除！');
+            }
+        }
+
+        // 出入库管理
+        function showInboundForm() {
+            document.getElementById('outbound-form').classList.remove('active');
+            document.getElementById('inbound-form').classList.add('active');
+            generateNewInboundId();
+        }
+
+        function showOutboundForm() {
+            document.getElementById('inbound-form').classList.remove('active');
+            document.getElementById('outbound-form').classList.add('active');
+            generateNewOutboundId();
+        }
+
+        function generateNewInboundId() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const id = `RK-${year}${month}${day}-${hours}${minutes}${seconds}`;
+            document.getElementById('new-inbound-id').value = id;
+        }
+
+        function generateNewOutboundId() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const id = `CK-${year}${month}${day}-${hours}${minutes}${seconds}`;
+            document.getElementById('new-outbound-id').value = id;
+        }
+
+        function saveInbound() {
+            const code = document.getElementById('new-inbound-id').value;
+            const productId = document.getElementById('new-inbound-product').value;
+            const productName = document.getElementById('new-inbound-product').options[document.getElementById('new-inbound-product').selectedIndex].text;
+            const quantity = parseInt(document.getElementById('new-inbound-quantity').value);
+            const supplier = document.getElementById('new-inbound-supplier').value;
+            const operator = document.getElementById('new-inbound-operator').value;
+            const notes = document.getElementById('new-inbound-notes').value;
+            
+            if (!productId || !quantity || isNaN(quantity) || quantity <= 0 || !operator) {
+                alert('请填写所有必填字段！');
+                return;
+            }
+            
+            // 生成唯一ID
+            const id = Math.max(...inventoryData.map(item => item.id), 0) + 1;
+            const now = new Date();
+            const time = now.toISOString().slice(0, 19).replace('T', ' ');
             
             // 添加新入库记录
-            inboundData.push({
+            inventoryData.push({
                 id: id,
                 code: code,
-                name: name,
-                time: time.replace('T', ' '),
-                supplier: supplier,
+                type: '入库',
+                productId: parseInt(productId),
+                productName: productName,
                 quantity: quantity,
-                unit: unit,
-                vehicle: vehicle
+                operator: operator,
+                time: time,
+                notes: notes || '无备注',
+                status: '已完成'
             });
             
-            // 保存到localStorage
-            saveDataToStorage();
-            
-            // 重新渲染表格
-            renderInboundTable();
-            
-            // 清空表单
-            document.getElementById('new-inbound-id').value = '';
-            document.getElementById('new-inbound-name').value = '';
-            document.getElementById('new-inbound-time').value = '';
-            document.getElementById('new-inbound-supplier').value = '';
-            document.getElementById('new-inbound-quantity').value = '';
-            document.getElementById('new-inbound-vehicle').value = '';
-            
-            alert('新入库记录已添加！');
-        }
-
-        function deleteInbound(id) {
-            if (confirm('确定要删除此入库记录吗？')) {
-                inboundData = inboundData.filter(item => item.id !== id);
-                
-                // 保存到localStorage
-                saveDataToStorage();
-                
-                renderInboundTable();
-                alert('入库记录已删除！');
-            }
-        }
-
-        // 出库管理
-        function openOutboundEditForm(id) {
-            const outbound = outboundData.find(item => item.id === id);
-            if (!outbound) return;
-            
-            document.getElementById('edit-outbound-id').value = outbound.code;
-            document.getElementById('edit-outbound-name').value = outbound.name;
-            document.getElementById('edit-outbound-time').value = outbound.time.replace(' ', 'T');
-            document.getElementById('edit-outbound-recipient').value = outbound.recipient;
-            document.getElementById('edit-outbound-quantity').value = outbound.quantity;
-            document.getElementById('edit-outbound-unit').value = outbound.unit;
-            document.getElementById('edit-outbound-vehicle').value = outbound.vehicle;
-            
-            // 存储当前编辑的ID
-            document.getElementById('save-outbound-btn').setAttribute('data-id', id);
-            
-            document.getElementById('outbound-edit-form').classList.add('active');
-        }
-
-        function saveOutboundEdit() {
-            const id = parseInt(document.getElementById('save-outbound-btn').getAttribute('data-id'));
-            const code = document.getElementById('edit-outbound-id').value;
-            const name = document.getElementById('edit-outbound-name').value;
-            const time = document.getElementById('edit-outbound-time').value;
-            const recipient = document.getElementById('edit-outbound-recipient').value;
-            const quantity = parseInt(document.getElementById('edit-outbound-quantity').value);
-            const unit = document.getElementById('edit-outbound-unit').value;
-            const vehicle = document.getElementById('edit-outbound-vehicle').value;
-            
-            if (!code || !name || !time || !recipient || isNaN(quantity) || !unit || !vehicle) {
-                alert('请填写所有必填字段！');
-                return;
-            }
-            
-            // 更新数据
-            const index = outboundData.findIndex(item => item.id === id);
-            if (index !== -1) {
-                outboundData[index].code = code;
-                outboundData[index].name = name;
-                outboundData[index].time = time.replace('T', ' ');
-                outboundData[index].recipient = recipient;
-                outboundData[index].quantity = quantity;
-                outboundData[index].unit = unit;
-                outboundData[index].vehicle = vehicle;
+            // 更新库存数量
+            const stockIndex = stockData.findIndex(item => item.id == productId);
+            if (stockIndex !== -1) {
+                stockData[stockIndex].quantity += quantity;
+                // 更新状态
+                if (stockData[stockIndex].quantity < 10) {
+                    stockData[stockIndex].status = '缺货';
+                } else if (stockData[stockIndex].quantity < 50) {
+                    stockData[stockIndex].status = '预警';
+                } else {
+                    stockData[stockIndex].status = '正常';
+                }
             }
             
             // 保存到localStorage
             saveDataToStorage();
             
             // 重新渲染表格
-            renderOutboundTable();
+            renderInventoryTable();
+            renderStockTable();
+            updateInfoCards(); // 更新信息卡片
             
-            // 关闭编辑表单
-            closeOutboundEditForm();
+            // 关闭表单
+            cancelInbound();
             
-            alert('出库信息已保存！');
+            alert('入库记录已保存！');
         }
 
-        function closeOutboundEditForm() {
-            document.getElementById('outbound-edit-form').classList.remove('active');
+        function cancelInbound() {
+            document.getElementById('inbound-form').classList.remove('active');
         }
 
-        function addNewOutbound() {
-            const id = Math.max(...outboundData.map(item => item.id), 0) + 1;
+        function saveOutbound() {
             const code = document.getElementById('new-outbound-id').value;
-            const name = document.getElementById('new-outbound-name').value;
-            const time = document.getElementById('new-outbound-time').value;
-            const recipient = document.getElementById('new-outbound-recipient').value;
+            const productId = document.getElementById('new-outbound-product').value;
+            const productName = document.getElementById('new-outbound-product').options[document.getElementById('new-outbound-product').selectedIndex].text;
             const quantity = parseInt(document.getElementById('new-outbound-quantity').value);
-            const unit = document.getElementById('new-outbound-unit').value;
-            const vehicle = document.getElementById('new-outbound-vehicle').value;
+            const customer = document.getElementById('new-outbound-customer').value;
+            const operator = document.getElementById('new-outbound-operator').value;
+            const notes = document.getElementById('new-outbound-notes').value;
             
-            if (!code || !name || !time || !recipient || isNaN(quantity) || !unit || !vehicle) {
+            if (!productId || !quantity || isNaN(quantity) || quantity <= 0 || !operator) {
                 alert('请填写所有必填字段！');
                 return;
             }
             
-            // 检查编号是否已存在
-            if (outboundData.some(item => item.code === code)) {
-                alert('出库单号已存在！');
+            // 检查库存是否足够
+            const stockItem = stockData.find(item => item.id == productId);
+            if (!stockItem || stockItem.quantity < quantity) {
+                alert('库存不足！');
                 return;
             }
+            
+            // 生成唯一ID
+            const id = Math.max(...inventoryData.map(item => item.id), 0) + 1;
+            const now = new Date();
+            const time = now.toISOString().slice(0, 19).replace('T', ' ');
             
             // 添加新出库记录
-            outboundData.push({
+            inventoryData.push({
                 id: id,
                 code: code,
-                name: name,
-                time: time.replace('T', ' '),
-                recipient: recipient,
+                type: '出库',
+                productId: parseInt(productId),
+                productName: productName,
                 quantity: quantity,
-                unit: unit,
-                vehicle: vehicle
+                operator: operator,
+                time: time,
+                notes: notes || '无备注',
+                status: '已完成'
             });
+            
+            // 更新库存数量
+            const stockIndex = stockData.findIndex(item => item.id == productId);
+            if (stockIndex !== -1) {
+                stockData[stockIndex].quantity -= quantity;
+                // 更新状态
+                if (stockData[stockIndex].quantity < 10) {
+                    stockData[stockIndex].status = '缺货';
+                } else if (stockData[stockIndex].quantity < 50) {
+                    stockData[stockIndex].status = '预警';
+                } else {
+                    stockData[stockIndex].status = '正常';
+                }
+            }
             
             // 保存到localStorage
             saveDataToStorage();
             
             // 重新渲染表格
-            renderOutboundTable();
+            renderInventoryTable();
+            renderStockTable();
+            updateInfoCards(); // 更新信息卡片
             
-            // 清空表单
-            document.getElementById('new-outbound-id').value = '';
-            document.getElementById('new-outbound-name').value = '';
-            document.getElementById('new-outbound-time').value = '';
-            document.getElementById('new-outbound-recipient').value = '';
-            document.getElementById('new-outbound-quantity').value = '';
-            document.getElementById('new-outbound-vehicle').value = '';
+            // 关闭表单
+            cancelOutbound();
             
-            alert('新出库记录已添加！');
+            alert('出库记录已保存！');
         }
 
-        function deleteOutbound(id) {
-            if (confirm('确定要删除此出库记录吗？')) {
-                outboundData = outboundData.filter(item => item.id !== id);
-                
-                // 保存到localStorage
-                saveDataToStorage();
-                
-                renderOutboundTable();
-                alert('出库记录已删除！');
-            }
+        function cancelOutbound() {
+            document.getElementById('outbound-form').classList.remove('active');
         }
 
         // 搜索功能
@@ -2724,36 +2352,35 @@
             renderInspectionTable(filtered);
         }
 
-        function searchInbound() {
-            const searchTerm = document.querySelector('.search-inbound').closest('.search-bar').querySelector('input').value.toLowerCase();
+        function searchStock() {
+            const searchTerm = document.querySelector('.search-stock').closest('.search-bar').querySelector('input').value.toLowerCase();
             if (!searchTerm) {
-                renderInboundTable();
+                renderStockTable();
                 return;
             }
             
-            const filtered = inboundData.filter(item => 
+            const filtered = stockData.filter(item => 
                 item.code.toLowerCase().includes(searchTerm) || 
-                item.name.toLowerCase().includes(searchTerm) ||
-                item.supplier.toLowerCase().includes(searchTerm)
+                item.name.toLowerCase().includes(searchTerm)
             );
             
-            renderInboundTable(filtered);
+            renderStockTable(filtered);
         }
 
-        function searchOutbound() {
-            const searchTerm = document.querySelector('.search-outbound').closest('.search-bar').querySelector('input').value.toLowerCase();
+        function searchInventory() {
+            const searchTerm = document.querySelector('.search-inventory').closest('.search-bar').querySelector('input').value.toLowerCase();
             if (!searchTerm) {
-                renderOutboundTable();
+                renderInventoryTable();
                 return;
             }
             
-            const filtered = outboundData.filter(item => 
+            const filtered = inventoryData.filter(item => 
                 item.code.toLowerCase().includes(searchTerm) || 
-                item.name.toLowerCase().includes(searchTerm) ||
-                item.recipient.toLowerCase().includes(searchTerm)
+                item.productName.toLowerCase().includes(searchTerm) ||
+                item.operator.toLowerCase().includes(searchTerm)
             );
             
-            renderOutboundTable(filtered);
+            renderInventoryTable(filtered);
         }
 
         // 事件处理函数（用于动态添加的元素）
@@ -2797,24 +2424,14 @@
             deleteInspection(inspectionId);
         }
 
-        function editInboundHandler(e) {
-            const inboundId = parseInt(this.getAttribute('data-id'));
-            openInboundEditForm(inboundId);
+        function editStockHandler(e) {
+            const stockId = parseInt(this.getAttribute('data-id'));
+            openStockEditForm(stockId);
         }
 
-        function deleteInboundHandler(e) {
-            const inboundId = parseInt(this.getAttribute('data-id'));
-            deleteInbound(inboundId);
-        }
-
-        function editOutboundHandler(e) {
-            const outboundId = parseInt(this.getAttribute('data-id'));
-            openOutboundEditForm(outboundId);
-        }
-
-        function deleteOutboundHandler(e) {
-            const outboundId = parseInt(this.getAttribute('data-id'));
-            deleteOutbound(outboundId);
+        function deleteStockHandler(e) {
+            const stockId = parseInt(this.getAttribute('data-id'));
+            deleteStock(stockId);
         }
         
         // 监听页面卸载事件，确保数据保存
