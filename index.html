@@ -570,7 +570,7 @@
                         </tr>
                     </thead>
                     <tbody id="equipment-table-body">
-                       
+                        <!-- 表格内容由JavaScript生成 -->
                     </tbody>
                 </table>
                 </div>
@@ -591,7 +591,9 @@
                         <div class="form-col">
                             <label>设备类型:</label>
                             <select id="edit-equipment-type">
-                               
+                                <option value="制冷设备">制冷设备</option>
+                                <option value="保温设备">保温设备</option>
+                                <option value="通风设备">通风设备</option>
                                 <option value="叉车">叉车</option>
                                 <option value="小客车">小客车</option>
                             </select>
@@ -622,7 +624,9 @@
                         <div class="form-col">
                             <label>设备类型:</label>
                             <select id="new-equipment-type">
-                              
+                                <option value="制冷设备">制冷设备</option>
+                                <option value="保温设备">保温设备</option>
+                                <option value="通风设备">通风设备</option>
                                 <option value="叉车">叉车</option>
                                 <option value="小客车">小客车</option>
                             </select>
@@ -965,11 +969,12 @@
                                 <th>厂家</th>
                                 <th>入库时间</th>
                                 <th>车辆信息</th>
+                                <th>备注</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
                         <tbody id="inbound-table-body">
-                      
+                            <!-- 表格内容由JavaScript生成 -->
                         </tbody>
                     </table>
                     </div>
@@ -989,14 +994,15 @@
                         <div class="form-row">
                             <div class="form-col">
                                 <label>数量:</label>
-                                 <select id="new-inspection-area">
-                                <option value="件">件</option>
-                                <option value="箱">箱</option>
-                                <option value="公斤">公斤</option>   
+                                <input type="number" id="edit-inbound-quantity">
                             </div>
                             <div class="form-col">
                                 <label>单位:</label>
-                                <input type="text" id="edit-inbound-unit">
+                                <select id="edit-inbound-unit">
+                                    <option value="件">件</option>
+                                    <option value="箱">箱</option>
+                                    <option value="公斤">公斤</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-row">
@@ -1013,6 +1019,10 @@
                             <div class="form-col">
                                 <label>车辆信息:</label>
                                 <input type="text" id="edit-inbound-vehicle">
+                            </div>
+                            <div class="form-col">
+                                <label>备注:</label>
+                                <input type="text" id="edit-inbound-note">
                             </div>
                         </div>
                         <button id="save-inbound-btn">保存更改</button>
@@ -1035,11 +1045,14 @@
                             <div class="form-col">
                                 <label>数量:</label>
                                 <input type="number" id="new-inbound-quantity" placeholder="请输入数量">
-                                
                             </div>
                             <div class="form-col">
                                 <label>单位:</label>
-                                <input type="text" id="new-inbound-unit" placeholder="请输入单位">
+                                <select id="new-inbound-unit">
+                                    <option value="件">件</option>
+                                    <option value="箱">箱</option>
+                                    <option value="公斤">公斤</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-row">
@@ -1056,6 +1069,10 @@
                             <div class="form-col">
                                 <label>车辆信息:</label>
                                 <input type="text" id="new-inbound-vehicle" placeholder="请输入车辆信息">
+                            </div>
+                            <div class="form-col">
+                                <label>备注:</label>
+                                <input type="text" id="new-inbound-note" placeholder="请输入备注">
                             </div>
                         </div>
                         <button id="add-inbound-btn">添加入库记录</button>
@@ -1080,11 +1097,12 @@
                                 <th>厂家</th>
                                 <th>出库时间</th>
                                 <th>车辆信息</th>
+                                <th>备注</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
                         <tbody id="outbound-table-body">
-                          
+                            <!-- 表格内容由JavaScript生成 -->
                         </tbody>
                     </table>
                     </div>
@@ -1104,14 +1122,15 @@
                         <div class="form-row">
                             <div class="form-col">
                                 <label>数量:</label>
-                                <select id="new-inspection-area">
-                                <option value="件">件</option>
-                                <option value="箱">箱</option>
-                                <option value="公斤">公斤</option>   
+                                <input type="number" id="edit-outbound-quantity">
                             </div>
                             <div class="form-col">
                                 <label>单位:</label>
-                                <input type="text" id="edit-outbound-unit">
+                                <select id="edit-outbound-unit">
+                                    <option value="件">件</option>
+                                    <option value="箱">箱</option>
+                                    <option value="公斤">公斤</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-row">
@@ -1128,6 +1147,10 @@
                             <div class="form-col">
                                 <label>车辆信息:</label>
                                 <input type="text" id="edit-outbound-vehicle">
+                            </div>
+                            <div class="form-col">
+                                <label>备注:</label>
+                                <input type="text" id="edit-outbound-note">
                             </div>
                         </div>
                         <button id="save-outbound-btn">保存更改</button>
@@ -1153,7 +1176,11 @@
                             </div>
                             <div class="form-col">
                                 <label>单位:</label>
-                                <input type="text" id="new-outbound-unit" placeholder="请输入单位">
+                                <select id="new-outbound-unit">
+                                    <option value="件">件</option>
+                                    <option value="箱">箱</option>
+                                    <option value="公斤">公斤</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-row">
@@ -1170,6 +1197,10 @@
                             <div class="form-col">
                                 <label>车辆信息:</label>
                                 <input type="text" id="new-outbound-vehicle" placeholder="请输入车辆信息">
+                            </div>
+                            <div class="form-col">
+                                <label>备注:</label>
+                                <input type="text" id="new-outbound-note" placeholder="请输入备注">
                             </div>
                         </div>
                         <button id="add-outbound-btn">添加出库记录</button>
@@ -1348,9 +1379,9 @@
                     inventoryInboundData = JSON.parse(storedInbound);
                 } else {
                     inventoryInboundData = [
-                        { id: 1, code: 'RK-2023-001', name: '冷冻牛肉', quantity: 1000, unit: '公斤', manufacturer: '内蒙古牧业集团', time: '2023-12-01T10:00', vehicle: '川A12345' },
-                        { id: 2, code: 'RK-2023-002', name: '速冻蔬菜', quantity: 500, unit: '公斤', manufacturer: '山东蔬菜基地', time: '2023-12-02T14:30', vehicle: '川B67890' },
-                        { id: 3, code: 'RK-2023-003', name: '冷冻海鲜', quantity: 300, unit: '公斤', manufacturer: '大连海产公司', time: '2023-12-03T09:15', vehicle: '川C11111' }
+                        { id: 1, code: 'RK-2023-001', name: '冷冻牛肉', quantity: 1000, unit: '公斤', manufacturer: '内蒙古牧业集团', time: '2023-12-01T10:00', vehicle: '川A12345', note: '优质牛肉' },
+                        { id: 2, code: 'RK-2023-002', name: '速冻蔬菜', quantity: 500, unit: '公斤', manufacturer: '山东蔬菜基地', time: '2023-12-02T14:30', vehicle: '川B67890', note: '新鲜采摘' },
+                        { id: 3, code: 'RK-2023-003', name: '冷冻海鲜', quantity: 300, unit: '公斤', manufacturer: '大连海产公司', time: '2023-12-03T09:15', vehicle: '川C11111', note: '进口产品' }
                     ];
                 }
                 
@@ -1360,8 +1391,8 @@
                     inventoryOutboundData = JSON.parse(storedOutbound);
                 } else {
                     inventoryOutboundData = [
-                        { id: 1, code: 'CK-2023-001', name: '冷冻牛肉', quantity: 200, unit: '公斤', manufacturer: '内蒙古牧业集团', time: '2023-12-01T16:00', vehicle: '川A99999' },
-                        { id: 2, code: 'CK-2023-002', name: '速冻蔬菜', quantity: 100, unit: '公斤', manufacturer: '山东蔬菜基地', time: '2023-12-02T17:30', vehicle: '川B88888' }
+                        { id: 1, code: 'CK-2023-001', name: '冷冻牛肉', quantity: 200, unit: '公斤', manufacturer: '内蒙古牧业集团', time: '2023-12-01T16:00', vehicle: '川A99999', note: '订单发货' },
+                        { id: 2, code: 'CK-2023-002', name: '速冻蔬菜', quantity: 100, unit: '公斤', manufacturer: '山东蔬菜基地', time: '2023-12-02T17:30', vehicle: '川B88888', note: '客户自提' }
                     ];
                 }
                 
@@ -1634,6 +1665,7 @@
                     <td>${item.manufacturer}</td>
                     <td>${formatDateTime(item.time)}</td>
                     <td>${item.vehicle}</td>
+                    <td>${item.note || ''}</td>
                     <td class="action-buttons">
                         <button class="btn-edit btn-small edit-inbound" data-id="${item.id}">编辑</button>
                         <button class="btn-danger btn-small delete-inbound" data-id="${item.id}">删除</button>
@@ -1672,6 +1704,7 @@
                     <td>${item.manufacturer}</td>
                     <td>${formatDateTime(item.time)}</td>
                     <td>${item.vehicle}</td>
+                    <td>${item.note || ''}</td>
                     <td class="action-buttons">
                         <button class="btn-edit btn-small edit-outbound" data-id="${item.id}">编辑</button>
                         <button class="btn-danger btn-small delete-outbound" data-id="${item.id}">删除</button>
@@ -2347,6 +2380,7 @@
             document.getElementById('edit-inbound-manufacturer').value = record.manufacturer;
             document.getElementById('edit-inbound-time').value = record.time;
             document.getElementById('edit-inbound-vehicle').value = record.vehicle;
+            document.getElementById('edit-inbound-note').value = record.note || '';
             
             // 存储当前编辑的ID
             document.getElementById('save-inbound-btn').setAttribute('data-id', id);
@@ -2363,6 +2397,7 @@
             const manufacturer = document.getElementById('edit-inbound-manufacturer').value;
             const time = document.getElementById('edit-inbound-time').value;
             const vehicle = document.getElementById('edit-inbound-vehicle').value;
+            const note = document.getElementById('edit-inbound-note').value;
             
             if (!code || !name || !quantity || !unit || !manufacturer || !time || !vehicle) {
                 alert('请填写所有必填字段！');
@@ -2379,6 +2414,7 @@
                 inventoryInboundData[index].manufacturer = manufacturer;
                 inventoryInboundData[index].time = time;
                 inventoryInboundData[index].vehicle = vehicle;
+                inventoryInboundData[index].note = note;
             }
             
             // 保存到localStorage
@@ -2407,6 +2443,7 @@
             const manufacturer = document.getElementById('new-inbound-manufacturer').value;
             const time = document.getElementById('new-inbound-time').value;
             const vehicle = document.getElementById('new-inbound-vehicle').value;
+            const note = document.getElementById('new-inbound-note').value;
             
             if (!code || !name || !quantity || !unit || !manufacturer || !time || !vehicle) {
                 alert('请填写所有必填字段！');
@@ -2428,7 +2465,8 @@
                 unit: unit,
                 manufacturer: manufacturer,
                 time: time,
-                vehicle: vehicle
+                vehicle: vehicle,
+                note: note
             });
             
             // 保存到localStorage
@@ -2446,6 +2484,7 @@
             document.getElementById('new-inbound-manufacturer').value = '';
             document.getElementById('new-inbound-time').value = '';
             document.getElementById('new-inbound-vehicle').value = '';
+            document.getElementById('new-inbound-note').value = '';
             
             alert('新入库记录已添加！');
         }
@@ -2475,6 +2514,7 @@
             document.getElementById('edit-outbound-manufacturer').value = record.manufacturer;
             document.getElementById('edit-outbound-time').value = record.time;
             document.getElementById('edit-outbound-vehicle').value = record.vehicle;
+            document.getElementById('edit-outbound-note').value = record.note || '';
             
             // 存储当前编辑的ID
             document.getElementById('save-outbound-btn').setAttribute('data-id', id);
@@ -2491,6 +2531,7 @@
             const manufacturer = document.getElementById('edit-outbound-manufacturer').value;
             const time = document.getElementById('edit-outbound-time').value;
             const vehicle = document.getElementById('edit-outbound-vehicle').value;
+            const note = document.getElementById('edit-outbound-note').value;
             
             if (!code || !name || !quantity || !unit || !manufacturer || !time || !vehicle) {
                 alert('请填写所有必填字段！');
@@ -2507,6 +2548,7 @@
                 inventoryOutboundData[index].manufacturer = manufacturer;
                 inventoryOutboundData[index].time = time;
                 inventoryOutboundData[index].vehicle = vehicle;
+                inventoryOutboundData[index].note = note;
             }
             
             // 保存到localStorage
@@ -2535,6 +2577,7 @@
             const manufacturer = document.getElementById('new-outbound-manufacturer').value;
             const time = document.getElementById('new-outbound-time').value;
             const vehicle = document.getElementById('new-outbound-vehicle').value;
+            const note = document.getElementById('new-outbound-note').value;
             
             if (!code || !name || !quantity || !unit || !manufacturer || !time || !vehicle) {
                 alert('请填写所有必填字段！');
@@ -2556,7 +2599,8 @@
                 unit: unit,
                 manufacturer: manufacturer,
                 time: time,
-                vehicle: vehicle
+                vehicle: vehicle,
+                note: note
             });
             
             // 保存到localStorage
@@ -2574,6 +2618,7 @@
             document.getElementById('new-outbound-manufacturer').value = '';
             document.getElementById('new-outbound-time').value = '';
             document.getElementById('new-outbound-vehicle').value = '';
+            document.getElementById('new-outbound-note').value = '';
             
             alert('新出库记录已添加！');
         }
