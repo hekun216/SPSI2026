@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据监控面板</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .stat-change {
+            font-size: 0.9em;
+            color: #28a745;
+        }
+        
+        .stat-change.negative {
+            color: #dc3545;
+        }
+        
+        .data-section {
+            padding: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .data-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .data-card h3 {
+            margin-top: 0;
+            color: #667eea;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .data-item:last-child {
+            border-bottom: none;
+        }
+        
+        .data-value {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .positive {
+            color: #28a745;
+        }
+        
+        .negative {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>数据监控面板</h1>
+            <p>实时数据监控与统计分析</p>
+        </div>
+        
+        <!-- 主要统计数据 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">1,247</div>
+                <div class="stat-label">合同数量</div>
+                <div class="stat-change positive">+23 本周新增</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">42</div>
+                <div class="stat-label">安全隐患</div>
+                <div class="stat-change negative">+3 本周新增</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">156</div>
+                <div class="stat-label">待换证人员</div>
+                <div class="stat-change">-8 本周减少</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">893</div>
+                <div class="stat-label">特种设备总数</div>
+                <div class="stat-change positive">+12 本周新增</div>
+            </div>
+        </div>
+        
+        <!-- 详细数据展示 -->
+        <div class="data-section">
+            <h2 class="section-title">详细数据统计</h2>
+            
+            <div class="data-grid">
+                <div class="data-card">
+                    <h3>合同统计详情</h3>
+                    <div class="data-item">
+                        <span>本月新增合同:</span>
+                        <span class="data-value positive">+156</span>
+                    </div>
+                    <div class="data-item">
+                        <span>已完成合同:</span>
+                        <span class="data-value positive">+98</span>
+                    </div>
+                    <div class="data-item">
+                        <span>进行中合同:</span>
+                        <span class="data-value">1,051</span>
+                    </div>
+                    <div class="data-item">
+                        <span>逾期合同:</span>
+                        <span class="data-value negative">+12</span>
+                    </div>
+                </div>
+                
+                <div class="data-card">
+                    <h3>安全隐患详情</h3>
+                    <div class="data-item">
+                        <span>严重隐患:</span>
+                        <span class="data-value negative">+8</span>
+                    </div>
+                    <div class="data-item">
+                        <span>一般隐患:</span>
+                        <span class="data-value">34</span>
+                    </div>
+                    <div class="data-item">
+                        <span>已整改:</span>
+                        <span class="data-value positive">+15</span>
+                    </div>
+                    <div class="data-item">
+                        <span>整改率:</span>
+                        <span class="data-value">78.5%</span>
+                    </div>
+                </div>
+                
+                <div class="data-card">
+                    <h3>人员证件详情</h3>
+                    <div class="data-item">
+                        <span>待换证人员:</span>
+                        <span class="data-value">156</span>
+                    </div>
+                    <div class="data-item">
+                        <span>即将到期:</span>
+                        <span class="data-value negative">+23</span>
+                    </div>
+                    <div class="data-item">
+                        <span>已换证:</span>
+                        <span class="data-value positive">+45</span>
+                    </div>
+                    <div class="data-item">
+                        <span>逾期未换:</span>
+                        <span class="data-value negative">+5</span>
+                    </div>
+                </div>
+                
+                <div class="data-card">
+                    <h3>特种设备详情</h3>
+                    <div class="data-item">
+                        <span>设备总数:</span>
+                        <span class="data-value">893</span>
+                    </div>
+                    <div class="data-item">
+                        <span>本月新增:</span>
+                        <span class="data-value positive">+12</span>
+                    </div>
+                    <div class="data-item">
+                        <span>维护中设备:</span>
+                        <span class="data-value">67</span>
+                    </div>
+                    <div class="data-item">
+                        <span>正常运行:</span>
+                        <span class="data-value positive">826</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 新增数据汇总 -->
+        <div class="data-section">
+            <h2 class="section-title">本周新增数据汇总</h2>
+            <div class="data-grid">
+                <div class="data-card">
+                    <h3>新增趋势分析</h3>
+                    <div class="data-item">
+                        <span>合同新增增长率:</span>
+                        <span class="data-value positive">+2.8%</span>
+                    </div>
+                    <div class="data-item">
+                        <span>安全隐患增长率:</span>
+                        <span class="data-value negative">+7.3%</span>
+                    </div>
+                    <div class="data-item">
+                        <span>待换证人员变化:</span>
+                        <span class="data-value negative">-4.8%</span>
+                    </div>
+                    <div class="data-item">
+                        <span>设备增长数量:</span>
+                        <span class="data-value positive">+1.4%</span>
+                    </div>
+                </div>
+                
+                <div class="data-card">
+                    <h3>关键指标预警</h3>
+                    <div class="data-item">
+                        <span>合同履约率:</span>
+                        <span class="data-value positive">96.2%</span>
+                    </div>
+                    <div class="data-item">
+                        <span>安全整改时效:</span>
+                        <span class="data-value">平均3.2天</span>
+                    </div>
+                    <div class="data-item">
+                        <span>证件到期预警:</span>
+                        <span class="data-value negative">15人</span>
+                    </div>
+                    <div class="data-item">
+                        <span>设备故障率:</span>
+                        <span class="data-value positive">0.8%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
