@@ -20,7 +20,7 @@
         }
         
         .sidebar {
-            width: 250px;
+            width: 280px;
             background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: white;
             padding: 20px 0;
@@ -37,28 +37,28 @@
         }
         
         .sidebar-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             margin-bottom: 5px;
         }
         
         .sidebar-subtitle {
-            font-size: 12px;
+            font-size: 13px;
             opacity: 0.8;
         }
         
         .nav-item {
-            padding: 12px 20px;
+            padding: 14px 25px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            font-size: 14px;
+            font-size: 15px;
         }
         
         .nav-item i {
-            margin-right: 10px;
-            font-size: 16px;
+            margin-right: 12px;
+            font-size: 18px;
         }
         
         .nav-item:hover {
@@ -67,12 +67,12 @@
         
         .nav-item.active {
             background: rgba(255,255,255,0.2);
-            border-left: 4px solid #fff;
+            border-left: 5px solid #fff;
         }
         
         .main-content {
             flex: 1;
-            margin-left: 250px;
+            margin-left: 280px;
             padding: 20px;
         }
         
@@ -151,6 +151,10 @@
             background: linear-gradient(to bottom, #9b59b6, #8e44ad);
         }
         
+        .info-card.storage::before {
+            background: linear-gradient(to bottom, #3498db, #2980b9);
+        }
+        
         .info-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
@@ -181,6 +185,11 @@
         .info-card.warning .card-icon {
             background: linear-gradient(135deg, #f3e5f5, #e1bee7);
             color: #8e44ad;
+        }
+        
+        .info-card.storage .card-icon {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #2980b9;
         }
         
         .card-content {
@@ -278,7 +287,7 @@
             font-size: 13px;
         }
         
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -287,7 +296,7 @@
             transition: border-color 0.3s;
         }
         
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #3498db;
             box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
@@ -414,6 +423,44 @@
             margin-left: 8px;
             display: inline-block;
         }
+        
+        .inventory-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .inventory-actions button {
+            margin-bottom: 0;
+        }
+        
+        .tab-container {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 15px;
+        }
+        
+        .tab-button {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        
+        .tab-button.active {
+            background: #1e3c72;
+            color: white;
+        }
+        
+        .inventory-tab {
+            display: none;
+        }
+        
+        .inventory-tab.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -436,6 +483,9 @@
         </div>
         <div class="nav-item" data-panel="inspection">
             <i>🔍</i> 安全检查记录
+        </div>
+        <div class="nav-item" data-panel="inventory">
+            <i>📦</i> 货物出入库管理
         </div>
     </div>
     
@@ -477,6 +527,15 @@
                             <div class="card-value card-warning" id="warning-count">12项</div>
                         </div>
                     </div>
+                    <div class="info-card storage">
+                        <div class="card-icon">
+                            <i>📦</i>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-title">库存总量</div>
+                            <div class="card-value card-normal" id="inventory-count">0件</div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="panel">
@@ -487,6 +546,7 @@
                         <li>特种作业人员管理：管理持证上岗人员信息</li>
                         <li>合同管理：跟踪客户服务合同状态</li>
                         <li>安全检查记录：记录日常安全检查情况</li>
+                        <li>货物出入库管理：管理货物的入库、出库记录</li>
                     </ul>
                 </div>
             </div>
@@ -619,7 +679,6 @@
                                 <option value="制冷与空调设备安装维修操作作业">制冷与空调设备安装维修操作作业</option>
                                 <option value="低压电工证">低压电工证</option>
                                 <option value="高压电工证">高压电工证</option>
-                            
                             </select>
                         </div>
                     </div>
@@ -652,7 +711,6 @@
                                 <option value="制冷与空调设备安装维修操作作业">制冷与空调设备安装维修操作作业</option>
                                 <option value="低压电工证">低压电工证</option>
                                 <option value="高压电工证">高压电工证</option>
-                             
                             </select>
                         </div>
                     </div>
@@ -885,6 +943,237 @@
                 </div>
             </div>
             
+            <div id="inventory-panel" class="panel">
+                <h2 class="panel-title">货物出入库管理</h2>
+                
+                <div class="tab-container">
+                    <button class="tab-button active" data-tab="inbound">入库管理</button>
+                    <button class="tab-button" data-tab="outbound">出库管理</button>
+                </div>
+                
+                <!-- 入库管理 -->
+                <div id="inbound-tab" class="inventory-tab active">
+                    <div class="search-bar">
+                        <input type="text" class="search-input" placeholder="搜索入库单号、货物名称..." data-type="inbound">
+                        <button class="btn-small search-inventory" data-type="inbound">搜索</button>
+                    </div>
+                    
+                    <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>入库单号</th>
+                                <th>货物名称</th>
+                                <th>数量</th>
+                                <th>单位</th>
+                                <th>厂家</th>
+                                <th>入库时间</th>
+                                <th>车辆信息</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inbound-table-body">
+                            <!-- 表格内容由JavaScript生成 -->
+                        </tbody>
+                    </table>
+                    </div>
+                    
+                    <div id="inbound-edit-form" class="edit-form">
+                        <h3>编辑入库记录</h3>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>入库单号:</label>
+                                <input type="text" id="edit-inbound-id" readonly>
+                            </div>
+                            <div class="form-col">
+                                <label>货物名称:</label>
+                                <input type="text" id="edit-inbound-name">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>数量:</label>
+                                <input type="number" id="edit-inbound-quantity">
+                            </div>
+                            <div class="form-col">
+                                <label>单位:</label>
+                                <input type="text" id="edit-inbound-unit">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>厂家:</label>
+                                <input type="text" id="edit-inbound-manufacturer">
+                            </div>
+                            <div class="form-col">
+                                <label>入库时间:</label>
+                                <input type="datetime-local" id="edit-inbound-time">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>车辆信息:</label>
+                                <input type="text" id="edit-inbound-vehicle">
+                            </div>
+                        </div>
+                        <button id="save-inbound-btn">保存更改</button>
+                        <button id="cancel-inbound-btn" class="btn-danger">取消</button>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <h3>新增入库记录</h3>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>入库单号:</label>
+                                <input type="text" id="new-inbound-id" placeholder="请输入入库单号">
+                            </div>
+                            <div class="form-col">
+                                <label>货物名称:</label>
+                                <input type="text" id="new-inbound-name" placeholder="请输入货物名称">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>数量:</label>
+                                <input type="number" id="new-inbound-quantity" placeholder="请输入数量">
+                            </div>
+                            <div class="form-col">
+                                <label>单位:</label>
+                                <input type="text" id="new-inbound-unit" placeholder="请输入单位">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>厂家:</label>
+                                <input type="text" id="new-inbound-manufacturer" placeholder="请输入厂家">
+                            </div>
+                            <div class="form-col">
+                                <label>入库时间:</label>
+                                <input type="datetime-local" id="new-inbound-time">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>车辆信息:</label>
+                                <input type="text" id="new-inbound-vehicle" placeholder="请输入车辆信息">
+                            </div>
+                        </div>
+                        <button id="add-inbound-btn">添加入库记录</button>
+                    </div>
+                </div>
+                
+                <!-- 出库管理 -->
+                <div id="outbound-tab" class="inventory-tab">
+                    <div class="search-bar">
+                        <input type="text" class="search-input" placeholder="搜索出库单号、货物名称..." data-type="outbound">
+                        <button class="btn-small search-inventory" data-type="outbound">搜索</button>
+                    </div>
+                    
+                    <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>出库单号</th>
+                                <th>货物名称</th>
+                                <th>数量</th>
+                                <th>单位</th>
+                                <th>厂家</th>
+                                <th>出库时间</th>
+                                <th>车辆信息</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="outbound-table-body">
+                            <!-- 表格内容由JavaScript生成 -->
+                        </tbody>
+                    </table>
+                    </div>
+                    
+                    <div id="outbound-edit-form" class="edit-form">
+                        <h3>编辑出库记录</h3>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>出库单号:</label>
+                                <input type="text" id="edit-outbound-id" readonly>
+                            </div>
+                            <div class="form-col">
+                                <label>货物名称:</label>
+                                <input type="text" id="edit-outbound-name">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>数量:</label>
+                                <input type="number" id="edit-outbound-quantity">
+                            </div>
+                            <div class="form-col">
+                                <label>单位:</label>
+                                <input type="text" id="edit-outbound-unit">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>厂家:</label>
+                                <input type="text" id="edit-outbound-manufacturer">
+                            </div>
+                            <div class="form-col">
+                                <label>出库时间:</label>
+                                <input type="datetime-local" id="edit-outbound-time">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>车辆信息:</label>
+                                <input type="text" id="edit-outbound-vehicle">
+                            </div>
+                        </div>
+                        <button id="save-outbound-btn">保存更改</button>
+                        <button id="cancel-outbound-btn" class="btn-danger">取消</button>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <h3>新增出库记录</h3>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>出库单号:</label>
+                                <input type="text" id="new-outbound-id" placeholder="请输入出库单号">
+                            </div>
+                            <div class="form-col">
+                                <label>货物名称:</label>
+                                <input type="text" id="new-outbound-name" placeholder="请输入货物名称">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>数量:</label>
+                                <input type="number" id="new-outbound-quantity" placeholder="请输入数量">
+                            </div>
+                            <div class="form-col">
+                                <label>单位:</label>
+                                <input type="text" id="new-outbound-unit" placeholder="请输入单位">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>厂家:</label>
+                                <input type="text" id="new-outbound-manufacturer" placeholder="请输入厂家">
+                            </div>
+                            <div class="form-col">
+                                <label>出库时间:</label>
+                                <input type="datetime-local" id="new-outbound-time">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>车辆信息:</label>
+                                <input type="text" id="new-outbound-vehicle" placeholder="请输入车辆信息">
+                            </div>
+                        </div>
+                        <button id="add-outbound-btn">添加出库记录</button>
+                    </div>
+                </div>
+            </div>
+            
             <footer>
                 <p>青白江冷链信息管理平台 © 2026 | 版权所有 | 技术支持：制冷班</p>
             </footer>
@@ -901,12 +1190,16 @@
         const PERSONNEL_DATA_KEY = 'coldChainPersonnelData';
         const CONTRACT_DATA_KEY = 'coldChainContractData';
         const INSPECTION_DATA_KEY = 'coldChainInspectionData';
+        const INVENTORY_INBOUND_KEY = 'coldChainInventoryInboundData';
+        const INVENTORY_OUTBOUND_KEY = 'coldChainInventoryOutboundData';
         
         // 全局数据存储
         let equipmentData = [];
         let personnelData = [];
         let contractData = [];
         let inspectionData = [];
+        let inventoryInboundData = [];
+        let inventoryOutboundData = [];
 
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
@@ -927,7 +1220,42 @@
             
             // 绑定导航事件
             bindNavigationEvents();
+            
+            // 绑定库存管理标签页事件
+            bindInventoryTabEvents();
         });
+
+        // 绑定库存管理标签页事件
+        function bindInventoryTabEvents() {
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabType = this.getAttribute('data-tab');
+                    
+                    // 移除所有活动状态
+                    document.querySelectorAll('.tab-button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // 添加当前活动状态
+                    this.classList.add('active');
+                    
+                    // 隐藏所有标签页
+                    document.querySelectorAll('.inventory-tab').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    
+                    // 显示对应标签页
+                    document.getElementById(`${tabType}-tab`).classList.add('active');
+                    
+                    // 重新渲染对应的表格
+                    if (tabType === 'inbound') {
+                        renderInboundTable();
+                    } else {
+                        renderOutboundTable();
+                    }
+                });
+            });
+        }
 
         // 绑定导航事件
         function bindNavigationEvents() {
@@ -1011,6 +1339,29 @@
                     ];
                 }
                 
+                // 加载入库数据
+                const storedInbound = localStorage.getItem(INVENTORY_INBOUND_KEY);
+                if (storedInbound) {
+                    inventoryInboundData = JSON.parse(storedInbound);
+                } else {
+                    inventoryInboundData = [
+                        { id: 1, code: 'RK-2023-001', name: '冷冻牛肉', quantity: 1000, unit: '公斤', manufacturer: '内蒙古牧业集团', time: '2023-12-01T10:00', vehicle: '川A12345' },
+                        { id: 2, code: 'RK-2023-002', name: '速冻蔬菜', quantity: 500, unit: '公斤', manufacturer: '山东蔬菜基地', time: '2023-12-02T14:30', vehicle: '川B67890' },
+                        { id: 3, code: 'RK-2023-003', name: '冷冻海鲜', quantity: 300, unit: '公斤', manufacturer: '大连海产公司', time: '2023-12-03T09:15', vehicle: '川C11111' }
+                    ];
+                }
+                
+                // 加载出库数据
+                const storedOutbound = localStorage.getItem(INVENTORY_OUTBOUND_KEY);
+                if (storedOutbound) {
+                    inventoryOutboundData = JSON.parse(storedOutbound);
+                } else {
+                    inventoryOutboundData = [
+                        { id: 1, code: 'CK-2023-001', name: '冷冻牛肉', quantity: 200, unit: '公斤', manufacturer: '内蒙古牧业集团', time: '2023-12-01T16:00', vehicle: '川A99999' },
+                        { id: 2, code: 'CK-2023-002', name: '速冻蔬菜', quantity: 100, unit: '公斤', manufacturer: '山东蔬菜基地', time: '2023-12-02T17:30', vehicle: '川B88888' }
+                    ];
+                }
+                
                 document.getElementById('storage-status').textContent = '数据已加载';
             } catch (error) {
                 console.error('加载数据时出错:', error);
@@ -1025,6 +1376,8 @@
                 localStorage.setItem(PERSONNEL_DATA_KEY, JSON.stringify(personnelData));
                 localStorage.setItem(CONTRACT_DATA_KEY, JSON.stringify(contractData));
                 localStorage.setItem(INSPECTION_DATA_KEY, JSON.stringify(inspectionData));
+                localStorage.setItem(INVENTORY_INBOUND_KEY, JSON.stringify(inventoryInboundData));
+                localStorage.setItem(INVENTORY_OUTBOUND_KEY, JSON.stringify(inventoryOutboundData));
                 
                 document.getElementById('storage-status').textContent = '数据已保存';
             } catch (error) {
@@ -1040,7 +1393,9 @@
                 equipment: equipmentData,
                 personnel: personnelData,
                 contract: contractData,
-                inspection: inspectionData
+                inspection: inspectionData,
+                inbound: inventoryInboundData,
+                outbound: inventoryOutboundData
             }).length;
             
             storageInfo.title = `总数据大小: ${totalSize} 字节`;
@@ -1074,6 +1429,12 @@
             const warningCount = expiringEquipment + expiringPersonnelCount + expiringContracts;
             document.getElementById('warning-count').textContent = warningCount + '项';
             document.getElementById('warning-badge').textContent = warningCount + '项';
+            
+            // 库存总量 - 计算净库存（入库-出库）
+            const totalInbound = inventoryInboundData.reduce((sum, item) => sum + item.quantity, 0);
+            const totalOutbound = inventoryOutboundData.reduce((sum, item) => sum + item.quantity, 0);
+            const netInventory = totalInbound - totalOutbound;
+            document.getElementById('inventory-count').textContent = netInventory + '件';
         }
 
         // 渲染表格函数
@@ -1082,6 +1443,8 @@
             renderPersonnelTable();
             renderContractTable();
             renderInspectionTable();
+            renderInboundTable();
+            renderOutboundTable();
             updateInfoCards();
         }
 
@@ -1251,6 +1614,95 @@
             });
         }
 
+        // 渲染入库表格
+        function renderInboundTable(data = inventoryInboundData) {
+            const tbody = document.getElementById('inbound-table-body');
+            tbody.innerHTML = '';
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-id', item.id);
+                
+                row.innerHTML = `
+                    <td>${item.code}</td>
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.unit}</td>
+                    <td>${item.manufacturer}</td>
+                    <td>${formatDateTime(item.time)}</td>
+                    <td>${item.vehicle}</td>
+                    <td class="action-buttons">
+                        <button class="btn-edit btn-small edit-inbound" data-id="${item.id}">编辑</button>
+                        <button class="btn-danger btn-small delete-inbound" data-id="${item.id}">删除</button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // 重新绑定事件监听器
+            document.querySelectorAll('.edit-inbound').forEach(button => {
+                button.removeEventListener('click', editInboundHandler);
+                button.addEventListener('click', editInboundHandler);
+            });
+            
+            document.querySelectorAll('.delete-inbound').forEach(button => {
+                button.removeEventListener('click', deleteInboundHandler);
+                button.addEventListener('click', deleteInboundHandler);
+            });
+        }
+
+        // 渲染出库表格
+        function renderOutboundTable(data = inventoryOutboundData) {
+            const tbody = document.getElementById('outbound-table-body');
+            tbody.innerHTML = '';
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-id', item.id);
+                
+                row.innerHTML = `
+                    <td>${item.code}</td>
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.unit}</td>
+                    <td>${item.manufacturer}</td>
+                    <td>${formatDateTime(item.time)}</td>
+                    <td>${item.vehicle}</td>
+                    <td class="action-buttons">
+                        <button class="btn-edit btn-small edit-outbound" data-id="${item.id}">编辑</button>
+                        <button class="btn-danger btn-small delete-outbound" data-id="${item.id}">删除</button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // 重新绑定事件监听器
+            document.querySelectorAll('.edit-outbound').forEach(button => {
+                button.removeEventListener('click', editOutboundHandler);
+                button.addEventListener('click', editOutboundHandler);
+            });
+            
+            document.querySelectorAll('.delete-outbound').forEach(button => {
+                button.removeEventListener('click', deleteOutboundHandler);
+                button.addEventListener('click', deleteOutboundHandler);
+            });
+        }
+
+        // 格式化日期时间
+        function formatDateTime(dateTimeStr) {
+            if (!dateTimeStr) return '';
+            const date = new Date(dateTimeStr);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
         // 绑定事件
         function bindEvents() {
             // 保存/取消设备编辑
@@ -1281,11 +1733,35 @@
             // 添加检查记录
             document.getElementById('add-inspection-btn').addEventListener('click', addNewInspection);
             
+            // 保存/取消入库编辑
+            document.getElementById('save-inbound-btn').addEventListener('click', saveInboundEdit);
+            document.getElementById('cancel-inbound-btn').addEventListener('click', closeInboundEditForm);
+            
+            // 添加入库记录
+            document.getElementById('add-inbound-btn').addEventListener('click', addNewInbound);
+            
+            // 保存/取消出库编辑
+            document.getElementById('save-outbound-btn').addEventListener('click', saveOutboundEdit);
+            document.getElementById('cancel-outbound-btn').addEventListener('click', closeOutboundEditForm);
+            
+            // 添加出库记录
+            document.getElementById('add-outbound-btn').addEventListener('click', addNewOutbound);
+            
             // 搜索功能
             document.querySelector('.search-equipment').addEventListener('click', searchEquipment);
             document.querySelector('.search-personnel').addEventListener('click', searchPersonnel);
             document.querySelector('.search-contract').addEventListener('click', searchContract);
             document.querySelector('.search-inspection').addEventListener('click', searchInspection);
+            document.querySelectorAll('.search-inventory').forEach(button => {
+                button.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    if (type === 'inbound') {
+                        searchInbound();
+                    } else {
+                        searchOutbound();
+                    }
+                });
+            });
             
             // 回车键搜索
             document.querySelectorAll('.search-input').forEach(input => {
@@ -1300,6 +1776,13 @@
                             searchContract();
                         } else if (tableContainer.querySelector('.search-inspection')) {
                             searchInspection();
+                        } else {
+                            const type = this.getAttribute('data-type');
+                            if (type === 'inbound') {
+                                searchInbound();
+                            } else {
+                                searchOutbound();
+                            }
                         }
                     }
                 });
@@ -1849,6 +2332,262 @@
             }
         }
 
+        // 入库管理
+        function openInboundEditForm(id) {
+            const record = inventoryInboundData.find(item => item.id === id);
+            if (!record) return;
+            
+            document.getElementById('edit-inbound-id').value = record.code;
+            document.getElementById('edit-inbound-name').value = record.name;
+            document.getElementById('edit-inbound-quantity').value = record.quantity;
+            document.getElementById('edit-inbound-unit').value = record.unit;
+            document.getElementById('edit-inbound-manufacturer').value = record.manufacturer;
+            document.getElementById('edit-inbound-time').value = record.time;
+            document.getElementById('edit-inbound-vehicle').value = record.vehicle;
+            
+            // 存储当前编辑的ID
+            document.getElementById('save-inbound-btn').setAttribute('data-id', id);
+            
+            document.getElementById('inbound-edit-form').classList.add('active');
+        }
+
+        function saveInboundEdit() {
+            const id = parseInt(document.getElementById('save-inbound-btn').getAttribute('data-id'));
+            const code = document.getElementById('edit-inbound-id').value;
+            const name = document.getElementById('edit-inbound-name').value;
+            const quantity = parseInt(document.getElementById('edit-inbound-quantity').value);
+            const unit = document.getElementById('edit-inbound-unit').value;
+            const manufacturer = document.getElementById('edit-inbound-manufacturer').value;
+            const time = document.getElementById('edit-inbound-time').value;
+            const vehicle = document.getElementById('edit-inbound-vehicle').value;
+            
+            if (!code || !name || !quantity || !unit || !manufacturer || !time || !vehicle) {
+                alert('请填写所有必填字段！');
+                return;
+            }
+            
+            // 更新数据
+            const index = inventoryInboundData.findIndex(item => item.id === id);
+            if (index !== -1) {
+                inventoryInboundData[index].code = code;
+                inventoryInboundData[index].name = name;
+                inventoryInboundData[index].quantity = quantity;
+                inventoryInboundData[index].unit = unit;
+                inventoryInboundData[index].manufacturer = manufacturer;
+                inventoryInboundData[index].time = time;
+                inventoryInboundData[index].vehicle = vehicle;
+            }
+            
+            // 保存到localStorage
+            saveDataToStorage();
+            
+            // 重新渲染表格
+            renderInboundTable();
+            updateInfoCards(); // 更新信息卡片
+            
+            // 关闭编辑表单
+            closeInboundEditForm();
+            
+            alert('入库记录已保存！');
+        }
+
+        function closeInboundEditForm() {
+            document.getElementById('inbound-edit-form').classList.remove('active');
+        }
+
+        function addNewInbound() {
+            const id = Math.max(...inventoryInboundData.map(item => item.id), 0) + 1;
+            const code = document.getElementById('new-inbound-id').value;
+            const name = document.getElementById('new-inbound-name').value;
+            const quantity = parseInt(document.getElementById('new-inbound-quantity').value);
+            const unit = document.getElementById('new-inbound-unit').value;
+            const manufacturer = document.getElementById('new-inbound-manufacturer').value;
+            const time = document.getElementById('new-inbound-time').value;
+            const vehicle = document.getElementById('new-inbound-vehicle').value;
+            
+            if (!code || !name || !quantity || !unit || !manufacturer || !time || !vehicle) {
+                alert('请填写所有必填字段！');
+                return;
+            }
+            
+            // 检查编号是否已存在
+            if (inventoryInboundData.some(item => item.code === code)) {
+                alert('入库单号已存在！');
+                return;
+            }
+            
+            // 添加新入库记录
+            inventoryInboundData.push({
+                id: id,
+                code: code,
+                name: name,
+                quantity: quantity,
+                unit: unit,
+                manufacturer: manufacturer,
+                time: time,
+                vehicle: vehicle
+            });
+            
+            // 保存到localStorage
+            saveDataToStorage();
+            
+            // 重新渲染表格
+            renderInboundTable();
+            updateInfoCards(); // 更新信息卡片
+            
+            // 清空表单
+            document.getElementById('new-inbound-id').value = '';
+            document.getElementById('new-inbound-name').value = '';
+            document.getElementById('new-inbound-quantity').value = '';
+            document.getElementById('new-inbound-unit').value = '';
+            document.getElementById('new-inbound-manufacturer').value = '';
+            document.getElementById('new-inbound-time').value = '';
+            document.getElementById('new-inbound-vehicle').value = '';
+            
+            alert('新入库记录已添加！');
+        }
+
+        function deleteInbound(id) {
+            if (confirm('确定要删除此入库记录吗？')) {
+                inventoryInboundData = inventoryInboundData.filter(item => item.id !== id);
+                
+                // 保存到localStorage
+                saveDataToStorage();
+                
+                renderInboundTable();
+                updateInfoCards(); // 更新信息卡片
+                alert('入库记录已删除！');
+            }
+        }
+
+        // 出库管理
+        function openOutboundEditForm(id) {
+            const record = inventoryOutboundData.find(item => item.id === id);
+            if (!record) return;
+            
+            document.getElementById('edit-outbound-id').value = record.code;
+            document.getElementById('edit-outbound-name').value = record.name;
+            document.getElementById('edit-outbound-quantity').value = record.quantity;
+            document.getElementById('edit-outbound-unit').value = record.unit;
+            document.getElementById('edit-outbound-manufacturer').value = record.manufacturer;
+            document.getElementById('edit-outbound-time').value = record.time;
+            document.getElementById('edit-outbound-vehicle').value = record.vehicle;
+            
+            // 存储当前编辑的ID
+            document.getElementById('save-outbound-btn').setAttribute('data-id', id);
+            
+            document.getElementById('outbound-edit-form').classList.add('active');
+        }
+
+        function saveOutboundEdit() {
+            const id = parseInt(document.getElementById('save-outbound-btn').getAttribute('data-id'));
+            const code = document.getElementById('edit-outbound-id').value;
+            const name = document.getElementById('edit-outbound-name').value;
+            const quantity = parseInt(document.getElementById('edit-outbound-quantity').value);
+            const unit = document.getElementById('edit-outbound-unit').value;
+            const manufacturer = document.getElementById('edit-outbound-manufacturer').value;
+            const time = document.getElementById('edit-outbound-time').value;
+            const vehicle = document.getElementById('edit-outbound-vehicle').value;
+            
+            if (!code || !name || !quantity || !unit || !manufacturer || !time || !vehicle) {
+                alert('请填写所有必填字段！');
+                return;
+            }
+            
+            // 更新数据
+            const index = inventoryOutboundData.findIndex(item => item.id === id);
+            if (index !== -1) {
+                inventoryOutboundData[index].code = code;
+                inventoryOutboundData[index].name = name;
+                inventoryOutboundData[index].quantity = quantity;
+                inventoryOutboundData[index].unit = unit;
+                inventoryOutboundData[index].manufacturer = manufacturer;
+                inventoryOutboundData[index].time = time;
+                inventoryOutboundData[index].vehicle = vehicle;
+            }
+            
+            // 保存到localStorage
+            saveDataToStorage();
+            
+            // 重新渲染表格
+            renderOutboundTable();
+            updateInfoCards(); // 更新信息卡片
+            
+            // 关闭编辑表单
+            closeOutboundEditForm();
+            
+            alert('出库记录已保存！');
+        }
+
+        function closeOutboundEditForm() {
+            document.getElementById('outbound-edit-form').classList.remove('active');
+        }
+
+        function addNewOutbound() {
+            const id = Math.max(...inventoryOutboundData.map(item => item.id), 0) + 1;
+            const code = document.getElementById('new-outbound-id').value;
+            const name = document.getElementById('new-outbound-name').value;
+            const quantity = parseInt(document.getElementById('new-outbound-quantity').value);
+            const unit = document.getElementById('new-outbound-unit').value;
+            const manufacturer = document.getElementById('new-outbound-manufacturer').value;
+            const time = document.getElementById('new-outbound-time').value;
+            const vehicle = document.getElementById('new-outbound-vehicle').value;
+            
+            if (!code || !name || !quantity || !unit || !manufacturer || !time || !vehicle) {
+                alert('请填写所有必填字段！');
+                return;
+            }
+            
+            // 检查编号是否已存在
+            if (inventoryOutboundData.some(item => item.code === code)) {
+                alert('出库单号已存在！');
+                return;
+            }
+            
+            // 添加新出库记录
+            inventoryOutboundData.push({
+                id: id,
+                code: code,
+                name: name,
+                quantity: quantity,
+                unit: unit,
+                manufacturer: manufacturer,
+                time: time,
+                vehicle: vehicle
+            });
+            
+            // 保存到localStorage
+            saveDataToStorage();
+            
+            // 重新渲染表格
+            renderOutboundTable();
+            updateInfoCards(); // 更新信息卡片
+            
+            // 清空表单
+            document.getElementById('new-outbound-id').value = '';
+            document.getElementById('new-outbound-name').value = '';
+            document.getElementById('new-outbound-quantity').value = '';
+            document.getElementById('new-outbound-unit').value = '';
+            document.getElementById('new-outbound-manufacturer').value = '';
+            document.getElementById('new-outbound-time').value = '';
+            document.getElementById('new-outbound-vehicle').value = '';
+            
+            alert('新出库记录已添加！');
+        }
+
+        function deleteOutbound(id) {
+            if (confirm('确定要删除此出库记录吗？')) {
+                inventoryOutboundData = inventoryOutboundData.filter(item => item.id !== id);
+                
+                // 保存到localStorage
+                saveDataToStorage();
+                
+                renderOutboundTable();
+                updateInfoCards(); // 更新信息卡片
+                alert('出库记录已删除！');
+            }
+        }
+
         // 搜索功能
         function searchEquipment() {
             const searchTerm = document.querySelector('.search-equipment').closest('.search-bar').querySelector('input').value.toLowerCase();
@@ -1910,6 +2649,38 @@
             renderInspectionTable(filtered);
         }
 
+        function searchInbound() {
+            const searchTerm = document.querySelector('[data-type="inbound"]').closest('.search-bar').querySelector('input').value.toLowerCase();
+            if (!searchTerm) {
+                renderInboundTable();
+                return;
+            }
+            
+            const filtered = inventoryInboundData.filter(item => 
+                item.code.toLowerCase().includes(searchTerm) || 
+                item.name.toLowerCase().includes(searchTerm) ||
+                item.manufacturer.toLowerCase().includes(searchTerm)
+            );
+            
+            renderInboundTable(filtered);
+        }
+
+        function searchOutbound() {
+            const searchTerm = document.querySelector('[data-type="outbound"]').closest('.search-bar').querySelector('input').value.toLowerCase();
+            if (!searchTerm) {
+                renderOutboundTable();
+                return;
+            }
+            
+            const filtered = inventoryOutboundData.filter(item => 
+                item.code.toLowerCase().includes(searchTerm) || 
+                item.name.toLowerCase().includes(searchTerm) ||
+                item.manufacturer.toLowerCase().includes(searchTerm)
+            );
+            
+            renderOutboundTable(filtered);
+        }
+
         // 事件处理函数（用于动态添加的元素）
         function editEquipmentHandler(e) {
             const equipmentId = parseInt(this.getAttribute('data-id'));
@@ -1949,6 +2720,26 @@
         function deleteInspectionHandler(e) {
             const inspectionId = parseInt(this.getAttribute('data-id'));
             deleteInspection(inspectionId);
+        }
+
+        function editInboundHandler(e) {
+            const inboundId = parseInt(this.getAttribute('data-id'));
+            openInboundEditForm(inboundId);
+        }
+
+        function deleteInboundHandler(e) {
+            const inboundId = parseInt(this.getAttribute('data-id'));
+            deleteInbound(inboundId);
+        }
+
+        function editOutboundHandler(e) {
+            const outboundId = parseInt(this.getAttribute('data-id'));
+            openOutboundEditForm(outboundId);
+        }
+
+        function deleteOutboundHandler(e) {
+            const outboundId = parseInt(this.getAttribute('data-id'));
+            deleteOutbound(outboundId);
         }
         
         // 监听页面卸载事件，确保数据保存
