@@ -480,57 +480,6 @@
         .inventory-tab.active {
             display: block;
         }
-        
-        /* 质保金相关的样式 */
-        .warranty-section {
-            background: #e8f4fc;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid #bde0fe;
-        }
-        
-        .warranty-title {
-            font-size: 16px;
-            color: #1e3c72;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-        
-        .warranty-info {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .warranty-field {
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .warranty-field label {
-            font-weight: normal;
-            margin-bottom: 2px;
-        }
-        
-        .warranty-field span {
-            display: block;
-            padding: 8px;
-            background: white;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        
-        .warranty-amount {
-            color: #e74c3c;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        
-        .warranty-due-date {
-            color: #f39c12;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -629,7 +578,7 @@
                     <ul style="margin: 10px 0 10px 20px;">
                         <li>特种设备管理：管理制冷设备、保温设备等特种设备</li>
                         <li>特种作业人员管理：管理持证上岗人员信息</li>
-                        <li>合同管理：跟踪客户服务合同状态，包括质保金管理</li>
+                        <li>合同管理：跟踪客户服务合同状态</li>
                         <li>安全检查记录：记录日常安全检查情况</li>
                         <li>货物入库管理：管理货物的入库记录</li>
                         <li>货物出库管理：管理货物的出库记录</li>
@@ -829,8 +778,6 @@
                             <th>客户名称</th>
                             <th>服务类型</th>
                             <th>合同金额</th>
-                            <th>质保金</th>
-                            <th>质保到期</th>
                             <th>签订日期</th>
                             <th>状态</th>
                             <th>操作</th>
@@ -867,31 +814,9 @@
                         </div>
                         <div class="form-col">
                             <label>合同金额:</label>
-                            <input type="text" id="edit-contract-amount">
+                            <input type="text" id="edit-contract-amount" placeholder="请输入金额，如：¥120,000">
                         </div>
                     </div>
-                    
-                    <!-- 质保金相关字段 -->
-                    <div class="warranty-section">
-                        <div class="warranty-title">质保金信息</div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>质保金比例 (%):</label>
-                                <input type="number" id="edit-warranty-percent" step="0.01" min="0" max="100" placeholder="例如: 5.00">
-                            </div>
-                            <div class="form-col">
-                                <label>质保金金额:</label>
-                                <input type="text" id="edit-warranty-amount" readonly placeholder="自动计算">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>质保到期日期:</label>
-                                <input type="date" id="edit-warranty-due-date">
-                            </div>
-                        </div>
-                    </div>
-                    
                     <div class="form-row">
                         <div class="form-col">
                             <label>签订日期:</label>
@@ -928,31 +853,9 @@
                         </div>
                         <div class="form-col">
                             <label>合同金额:</label>
-                            <input type="text" id="new-contract-amount" placeholder="请输入合同金额">
+                            <input type="text" id="new-contract-amount" placeholder="请输入金额，如：¥120,000">
                         </div>
                     </div>
-                    
-                    <!-- 新增合同的质保金相关字段 -->
-                    <div class="warranty-section">
-                        <div class="warranty-title">质保金信息</div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>质保金比例 (%):</label>
-                                <input type="number" id="new-warranty-percent" step="0.01" min="0" max="100" placeholder="例如: 5.00">
-                            </div>
-                            <div class="form-col">
-                                <label>质保金金额:</label>
-                                <input type="text" id="new-warranty-amount" readonly placeholder="自动计算">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-col">
-                                <label>质保到期日期:</label>
-                                <input type="date" id="new-warranty-due-date">
-                            </div>
-                        </div>
-                    </div>
-                    
                     <div class="form-row">
                         <div class="form-col">
                             <label>签订日期:</label>
@@ -1445,10 +1348,10 @@
                     contractData = JSON.parse(storedContract);
                 } else {
                     contractData = [
-                        { id: 1, code: 'HT-2023-001', client: '成都冷链物流有限公司', type: '设备维护', amount: '120000', warrantyPercent: 5.00, warrantyAmount: '6000', warrantyDueDate: '2025-01-15', date: '2023-01-15', status: '执行中' },
-                        { id: 2, code: 'HT-2023-002', client: '四川食品集团', type: '设备租赁', amount: '80000', warrantyPercent: 3.00, warrantyAmount: '2400', warrantyDueDate: '2024-12-20', date: '2023-02-20', status: '执行中' },
-                        { id: 3, code: 'HT-2023-003', client: '西南冷链配送中心', type: '技术服务', amount: '150000', warrantyPercent: 7.00, warrantyAmount: '10500', warrantyDueDate: '2024-11-10', date: '2023-03-10', status: '即将到期' },
-                        { id: 4, code: 'HT-2023-004', client: '青白江农业合作社', type: '购买设备', amount: '200000', warrantyPercent: 10.00, warrantyAmount: '20000', warrantyDueDate: '2024-10-05', date: '2023-04-05', status: '已到期' }
+                        { id: 1, code: 'HT-2023-001', client: '成都冷链物流有限公司', type: '设备维护', amount: '¥120,000', date: '2023-01-15', status: '执行中' },
+                        { id: 2, code: 'HT-2023-002', client: '四川食品集团', type: '设备租赁', amount: '¥80,000', date: '2023-02-20', status: '执行中' },
+                        { id: 3, code: 'HT-2023-003', client: '西南冷链配送中心', type: '技术服务', amount: '¥150,000', date: '2023-03-10', status: '即将到期' },
+                        { id: 4, code: 'HT-2023-004', client: '青白江农业合作社', type: '设备销售', amount: '¥200,000', date: '2023-04-05', status: '已到期' }
                     ];
                 }
 
@@ -1670,17 +1573,14 @@
                 else if (item.status === '即将到期') statusClass = 'status-expiring';
                 else if (item.status === '已到期') statusClass = 'status-overdue';
                 
-                // 格式化金额
-                const formattedAmount = '¥' + parseFloat(item.amount).toLocaleString();
-                const formattedWarranty = item.warrantyAmount ? '¥' + parseFloat(item.warrantyAmount).toLocaleString() : '无';
+                // 修复合同金额显示问题，确保金额是字符串格式
+                const formattedAmount = typeof item.amount === 'string' ? item.amount : (typeof item.amount === 'number' ? `¥${item.amount.toLocaleString()}` : '¥0');
                 
                 row.innerHTML = `
                     <td>${item.code}</td>
                     <td>${item.client}</td>
                     <td>${item.type}</td>
                     <td>${formattedAmount}</td>
-                    <td>${formattedWarranty}</td>
-                    <td>${item.warrantyDueDate || '-'}</td>
                     <td>${item.date}</td>
                     <td><span class="${statusClass}">${item.status}</span></td>
                     <td class="action-buttons">
@@ -1910,32 +1810,6 @@
                     }
                 });
             });
-            
-            // 合同金额变化时自动计算质保金
-            document.getElementById('edit-contract-amount').addEventListener('input', calculateWarrantyAmount);
-            document.getElementById('edit-warranty-percent').addEventListener('input', calculateWarrantyAmount);
-            document.getElementById('new-contract-amount').addEventListener('input', calculateNewWarrantyAmount);
-            document.getElementById('new-warranty-percent').addEventListener('input', calculateNewWarrantyAmount);
-        }
-
-        // 计算质保金金额（编辑表单）
-        function calculateWarrantyAmount() {
-            const amountInput = document.getElementById('edit-contract-amount');
-            const percentInput = document.getElementById('edit-warranty-percent');
-            const amountValue = parseFloat(amountInput.value) || 0;
-            const percentValue = parseFloat(percentInput.value) || 0;
-            const warrantyAmount = (amountValue * percentValue / 100).toFixed(2);
-            document.getElementById('edit-warranty-amount').value = warrantyAmount;
-        }
-
-        // 计算质保金金额（新增表单）
-        function calculateNewWarrantyAmount() {
-            const amountInput = document.getElementById('new-contract-amount');
-            const percentInput = document.getElementById('new-warranty-percent');
-            const amountValue = parseFloat(amountInput.value) || 0;
-            const percentValue = parseFloat(percentInput.value) || 0;
-            const warrantyAmount = (amountValue * percentValue / 100).toFixed(2);
-            document.getElementById('new-warranty-amount').value = warrantyAmount;
         }
 
         // 设备编辑相关函数
@@ -2223,11 +2097,6 @@
             document.getElementById('edit-contract-amount').value = contract.amount;
             document.getElementById('edit-contract-date').value = contract.date;
             
-            // 质保金相关字段
-            document.getElementById('edit-warranty-percent').value = contract.warrantyPercent || '';
-            document.getElementById('edit-warranty-amount').value = contract.warrantyAmount || '';
-            document.getElementById('edit-warranty-due-date').value = contract.warrantyDueDate || '';
-            
             // 存储当前编辑的ID
             document.getElementById('save-contract-btn').setAttribute('data-id', id);
             
@@ -2241,13 +2110,14 @@
             const amount = document.getElementById('edit-contract-amount').value;
             const date = document.getElementById('edit-contract-date').value;
             
-            // 质保金相关字段
-            const warrantyPercent = parseFloat(document.getElementById('edit-warranty-percent').value) || 0;
-            const warrantyAmount = document.getElementById('edit-warranty-amount').value;
-            const warrantyDueDate = document.getElementById('edit-warranty-due-date').value;
-            
             if (!client || !type || !amount || !date) {
                 alert('请填写所有必填字段！');
+                return;
+            }
+            
+            // 验证金额格式
+            if (!isValidAmount(amount)) {
+                alert('请输入正确的金额格式，例如：¥120,000 或 ¥120000');
                 return;
             }
             
@@ -2258,11 +2128,6 @@
                 contractData[index].type = type;
                 contractData[index].amount = amount;
                 contractData[index].date = date;
-                
-                // 更新质保金信息
-                contractData[index].warrantyPercent = warrantyPercent;
-                contractData[index].warrantyAmount = warrantyAmount;
-                contractData[index].warrantyDueDate = warrantyDueDate;
                 
                 // 更新状态
                 const today = new Date();
@@ -2276,14 +2141,6 @@
                         contractData[index].status = '即将到期';
                     } else {
                         contractData[index].status = '执行中';
-                    }
-                }
-                
-                // 检查质保金是否到期
-                if (warrantyDueDate) {
-                    const warrantyDate = new Date(warrantyDueDate);
-                    if (warrantyDate < today) {
-                        // 质保金已到期，可以考虑更新状态
                     }
                 }
             }
@@ -2313,13 +2170,14 @@
             const amount = document.getElementById('new-contract-amount').value;
             const date = document.getElementById('new-contract-date').value;
             
-            // 质保金相关字段
-            const warrantyPercent = parseFloat(document.getElementById('new-warranty-percent').value) || 0;
-            const warrantyAmount = document.getElementById('new-warranty-amount').value;
-            const warrantyDueDate = document.getElementById('new-warranty-due-date').value;
-            
             if (!code || !client || !type || !amount || !date) {
                 alert('请填写所有必填字段！');
+                return;
+            }
+            
+            // 验证金额格式
+            if (!isValidAmount(amount)) {
+                alert('请输入正确的金额格式，例如：¥120,000 或 ¥120000');
                 return;
             }
             
@@ -2350,9 +2208,6 @@
                 type: type,
                 amount: amount,
                 date: date,
-                warrantyPercent: warrantyPercent,
-                warrantyAmount: warrantyAmount,
-                warrantyDueDate: warrantyDueDate,
                 status: status
             });
             
@@ -2368,11 +2223,16 @@
             document.getElementById('new-contract-client').value = '';
             document.getElementById('new-contract-amount').value = '';
             document.getElementById('new-contract-date').value = '';
-            document.getElementById('new-warranty-percent').value = '';
-            document.getElementById('new-warranty-amount').value = '';
-            document.getElementById('new-warranty-due-date').value = '';
             
             alert('新合同已添加！');
+        }
+
+        function isValidAmount(amount) {
+            // 检查金额格式，允许数字、逗号和货币符号
+            const regex = /^¥?\d{1,3}(,\d{3})*(\.\d{1,2})?$/;
+            // 如果没有¥符号，则检查数字格式
+            const regexWithoutSymbol = /^\d{1,3}(,\d{3})*(\.\d{1,2})?$/;
+            return regex.test(amount) || regexWithoutSymbol.test(amount);
         }
 
         function deleteContract(id) {
